@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+venv/
+ENV/
+env/
+.venv/
+
+# Django
+*.log
+local_settings.py
+db.sqlite3
+db.sqlite3-journal
+media/
+
+# IDE та редактори
+.vscode/
+.pycharm/
+.idea/
+*.swp
+*.swo
+
+# Операційна система
+.DS_Store
+Thumbs.db
