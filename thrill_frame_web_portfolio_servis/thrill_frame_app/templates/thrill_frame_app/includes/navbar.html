@@ -1,0 +1,39 @@
+{% load static %}
+<header class="fixed-top mt-2 mt-lg-3 px-2 px-md-3">
+    <nav class="navbar navbar-expand-lg custom-floating-nav container py-2 px-3 px-lg-4 shadow-lg">
+
+        <!-- Симетрична заглушка для центрування логотипу на мобільному -->
+        <div class="nav-spacer d-lg-none"></div>
+
+        <!-- Логотип: зсувається в центр при зменшенні екрана -->
+        <a class="navbar-brand mx-auto mx-lg-0 me-lg-auto transition-all" href="{% url 'thrill_frame_app:home' %}">
+            <img src="{% static 'thrill_frame_app/images/logo.png' %}" alt="Thrill Frame Logo" width="48" height="48" class="nav-logo rounded-circle">
+        </a>
+
+        <!-- Кнопка мобільного меню -->
+        <button class="navbar-toggler border-0 text-white shadow-none p-1" type="button" data-bs-toggle="collapse" data-bs-target="#thrillNav" aria-controls="thrillNav" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-grid-3x3-gap-fill fs-2 text-white-50"></i>
+        </button>
+
+        <!-- Меню без верхньої лінії -->
+        <div class="collapse navbar-collapse justify-content-end w-100" id="thrillNav">
+            <ul class="navbar-nav align-items-center gap-lg-2 text-center pt-3 pt-lg-0 mt-2 mt-lg-0">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{% url 'thrill_frame_app:home' %}">Головна</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{% url 'thrill_frame_app:video' %}">Відео</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-custom" href="{% url 'thrill_frame_app:photos' %}">Фотосесії</a>
+                </li>
+                <li class="nav-item ms-lg-2 mt-3 mt-lg-0 w-100 w-lg-auto">
+                    <a href="{% url 'thrill_frame_app:contacts' %}" class="btn btn-cta-glow rounded-pill px-4 py-2 w-100 w-lg-auto">
+                        <span>Зв'язатися</span>
+                        <i class="bi bi-arrow-up-right-short fs-5 ms-1"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</header>
