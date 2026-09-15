@@ -1,3 +1,8 @@
+body {
+    background-color: rgba(18, 20, 24, 0.88) !important;
+    color: #ffffff;
+}
+
 /* Плавний перехід позиціонування логотипу */
 .transition-all {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
@@ -5,7 +10,7 @@
 
 /* Плаваючий навбар */
 .custom-floating-nav {
-    background: rgba(18, 20, 24, 0.88);
+    background: rgba(18, 20, 24, 0.70);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(255, 255, 255, 0.12);
@@ -70,4 +75,49 @@
     transform: translateY(-2px);
     box-shadow: 0 6px 25px rgba(255, 75, 43, 0.65);
     color: #ffffff;
+}
+
+/* Стилізація острівного футера (збігається з навбаром) */
+.custom-floating-footer {
+    background: rgba(18, 20, 24, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 50px;
+}
+
+/* Шрифт і колір тексту як у пунктів меню */
+.footer-text {
+    color: rgba(255, 255, 255, 0.7);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+}
+
+.username-gradient {
+    background: linear-gradient(45deg, #ff3b3b, #ff9a44);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.btn-login-glass {
+    color: rgba(255, 255, 255, 0.9);
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.btn-login-glass:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.4);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.hover-white:hover {
+    color: #fff !important;
 }
