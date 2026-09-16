@@ -1,1 +1,29 @@
 {% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<meta name="referrer" content="origin-when-cross-origin">
+<div class="container my-4 pt-4">
+    <div class="hero-slider-wrapper">
+        {% for slide in slides %}
+        <div class="hero-slide {% if forloop.first %}active{% endif %}" id="slide-{{ forloop.counter0 }}" data-youtube-id="{{ slide.youtube_id }}">
+            <div class="video-embed">
+                <div id="player{{ forloop.counter0 }}"></div>
+            </div>
+            
+            <div class="slide-overlay-bottom">
+                {{ slide.overlay_text }}
+            </div>
+        </div>
+        {% empty %}
+        <div class="d-flex align-items-center justify-content-center h-100 text-white-50">
+            <p class="m-0">Слайди ще не додано в адмін-панелі.</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'thrill_frame_app/js/video-slider.js' %}"></script>
+{% endblock %}
