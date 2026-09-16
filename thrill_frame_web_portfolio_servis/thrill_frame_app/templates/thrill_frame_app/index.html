@@ -22,6 +22,36 @@
         {% endfor %}
     </div>
 </div>
+<!-- Блок про нас у стилізованому блоці -->
+<section class="about-section my-5 p-4 p-md-5 rounded-4 fade-in-up">
+    <div class="row align-items-center g-4">
+        
+        <!-- Логотип (на мобільних зверху, на десктопі праворуч) -->
+        <div class="col-lg-4 order-1 order-lg-2 text-center">
+            <img src="{% static 'thrill_frame_app/images/title_logo.png' %}" alt="Thrill Frame Production Logo" class="img-fluid about-logo">
+        </div>
+
+        <!-- Текст (на мобільних знизу, на десктопі ліворуч) -->
+        <div class="col-lg-8 order-2 order-lg-1">
+            <p class="about-lead mb-4">
+                Візуальний контент, який викликає емоції та дивує. <span class="fw-semibold text-white">Thrill Frame Production</span> — це 3+ роки досвіду у створенні видовищних відео та фото. Наш фокус:
+            </p>
+            
+            <ul class="about-list list-unstyled mb-0">
+                <li class="mb-3">
+                    <strong class="text-white">Event & Live:</strong> Зйомка масштабних фестивалів, музичних кліпів, короткого метра та живі VJ-перфоманси.
+                </li>
+                <li class="mb-3">
+                    <strong class="text-white">Fashion & People:</strong> Модельні відео, відеопортрети та концептуальні тематичні фотосесії.
+                </li>
+                <li>
+                    <strong class="text-white">Commercial & Social:</strong> Яскраві промо-ролики, реклама та актуальні Reels, що залучають аудиторію.
+                </li>
+            </ul>
+        </div>
+
+    </div>
+</section>
 {% endblock %}
 
 {% block extra_js %}
