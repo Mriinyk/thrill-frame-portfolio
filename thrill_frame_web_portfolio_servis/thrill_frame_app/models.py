@@ -45,3 +45,45 @@ class SiteVisit(models.Model):
 
   def __str__(self):
     return f"Відвідувань: {self.count}"
+
+
+class NewRelease(models.Model):
+    title = models.CharField("Заголовок", max_length=255)
+    category = models.CharField("Категорія", max_length=100)
+    video_url = models.URLField("Посилання на YouTube")
+    is_active = models.BooleanField("Активно", default=True)
+    order = models.PositiveIntegerField(
+        "Порядок сортування",
+        default=0,
+        help_text="Менше число = вище у списку (0, 1, 2...)",
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Новинка"
+        verbose_name_plural = "Новинки"
+        ordering = ["order", "-created_at"]
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def youtube_id(self):
+        if not self.video_url:
+            return ""
+        url = self.video_url.strip()
+        pattern = r"(?:v=|\/embed\/|\/shorts\/|\/v\/|youtu\.be\/|\/live\/)([a-zA-Z0-9_-]{11})"
+        match = re.search(pattern, url)
+        if match:
+            return match.group(1)
+        if len(url) == 11 and re.match(r"^[a-zA-Z0-9_-]{11}$", url):
+            return url
+        return ""
+
+    @property
+    def thumbnail_url(self):
+        if self.youtube_id:
+            return (
+                f"https://img.youtube.com/vi/{self.youtube_id}/hqdefault.jpg"
+            )
+        return ""

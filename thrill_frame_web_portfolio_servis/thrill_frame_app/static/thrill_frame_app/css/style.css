@@ -40,8 +40,8 @@ body {
 
 .nav-logo:hover {
     transform: scale(1.08);
-    border-color: #ff4b2b;
-    box-shadow: 0 0 15px rgba(255, 75, 43, 0.5);
+    border-color: #ff3b30;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.5);
 }
 
 /* Посилання меню */
@@ -59,7 +59,7 @@ body {
 
 /* Кнопка CTA */
 .btn-cta-glow {
-    background: linear-gradient(135deg, #ff3b30 0%, #ff7300 100%);
+    background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
     color: #ffffff !important;
     border: none;
     font-weight: 600;
@@ -73,7 +73,7 @@ body {
 
 .btn-cta-glow:hover {
     transform: translateY(-2px);
-    box-shadow: 0 6px 25px rgba(255, 115, 0, 0.55);
+    box-shadow: 0 6px 25px rgba(255, 59, 48, 0.55);
     color: #ffffff;
 }
 
@@ -91,7 +91,7 @@ body {
     font-size: clamp(1.8rem, 3.5vw, 2.8rem);
     font-weight: 800;
     line-height: 1;
-    background: linear-gradient(135deg, #ff3b30 0%, #ff7300 100%);
+    background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -115,7 +115,7 @@ body {
 }
 
 .username-gradient {
-    background: linear-gradient(45deg, #ff3b3b, #ff9a44);
+    background: linear-gradient(45deg, #ff3b3b, #b80d0d);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -370,7 +370,7 @@ body {
 }
 
 .btn-auth-submit {
-    background: linear-gradient(135deg, #ff3b30 0%, #d7261d 100%);
+    background: linear-gradient(135deg, #ff3b30 0%, #a80000 100%);
     color: #ffffff;
     border: none;
     border-radius: 12px;
@@ -381,7 +381,7 @@ body {
 }
 
 .btn-auth-submit:hover {
-    background: linear-gradient(135deg, #ff4f46 0%, #e53026 100%);
+    background: linear-gradient(135deg, #ff5248 0%, #c40000 100%);
     color: #ffffff;
     box-shadow: 0 12px 30px rgba(255, 59, 48, 0.6);
     transform: translateY(-2px);
@@ -421,7 +421,7 @@ body {
 .user-gradient-name {
     font-weight: 700;
     font-size: 1.3rem;
-    background: linear-gradient(135deg, #ff3b30 0%, #ff7300 100%);
+    background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -444,4 +444,103 @@ body {
 .logout-icon-btn:hover {
     color: #ff3b30;
     transform: translateX(2px);
+}
+
+/* Блок Новинки */
+.section-title {
+    font-weight: 800;
+    font-size: clamp(2rem, 3.5vw, 2.5rem);
+    background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.release-card {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 14px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.release-card:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 59, 48, 0.4);
+    box-shadow: 0 12px 30px rgba(255, 59, 48, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.card-thumbnail-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #2a2a2a;
+    cursor: pointer;
+}
+
+.card-thumbnail {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+.card-thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #333;
+}
+
+.release-card:hover .card-thumbnail {
+    transform: scale(1.05);
+}
+
+.play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: #ffffff;
+    opacity: 0.85;
+    transition: all 0.3s ease;
+}
+
+.release-card:hover .play-overlay {
+    opacity: 1;
+    color: #ff3b30;
+    transform: scale(1.1);
+}
+
+.release-title {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #ffffff;
+    margin-bottom: 0.25rem;
+}
+
+.release-category {
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+/* Модальне вікно відео на 80% ширини екрана */
+.custom-video-modal .modal-dialog {
+    max-width: 80vw;
+    width: 80vw;
+}
+
+@media (max-width: 768px) {
+    .custom-video-modal .modal-dialog {
+        max-width: 95vw;
+        width: 95vw;
+    }
 }

@@ -91,3 +91,33 @@ if (window.YT && window.YT.Player) {
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
+
+// Блок новинок
+document.addEventListener('DOMContentLoaded', function () {
+    const videoModalElement = document.getElementById('videoModal');
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const videoModalTitle = document.getElementById('videoModalTitle');
+
+    if (!videoModalElement || !youtubePlayer) return;
+
+    const bsModal = new bootstrap.Modal(videoModalElement);
+
+    document.querySelectorAll('.release-card').forEach(card => {
+        card.addEventListener('click', function () {
+            const videoId = this.getAttribute('data-video-id');
+            const videoTitle = this.getAttribute('data-video-title') || '';
+
+            if (videoId && videoId.trim() !== '') {
+                videoModalTitle.textContent = videoTitle;
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                bsModal.show();
+            } else {
+                console.error('Не вдалося витягти YouTube ID. Перевірте посилання в адмінці.');
+            }
+        });
+    });
+
+    videoModalElement.addEventListener('hidden.bs.modal', function () {
+        youtubePlayer.src = '';
+    });
+});

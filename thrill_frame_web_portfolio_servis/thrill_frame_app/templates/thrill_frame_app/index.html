@@ -22,6 +22,7 @@
         {% endfor %}
     </div>
 </div>
+
 <!-- Блок біографії -->
 <section class="about-section my-5 p-4 p-md-5 rounded-4 fade-in-up">
     <div class="row align-items-center g-4">
@@ -51,6 +52,68 @@
 
     </div>
 </section>
+
+<!-- Секція "Новинки" -->
+<section class="py-5">
+    <div class="container">
+        <!-- 1. Заголовок секції -->
+        <h2 class="text-center mb-4 fw-bold section-title">Новинки</h2>
+
+        <div class="row g-4">
+            {% for release in new_releases %}
+                <div class="col-12 col-md-6 col-lg-4">
+                    <div class="release-card" 
+                         data-video-id="{{ release.youtube_id }}" 
+                         data-video-title="{{ release.title }}">
+                        
+                        <div class="card-thumbnail-wrapper">
+                            {% if release.thumbnail_url %}
+                                <img src="{{ release.thumbnail_url }}" alt="{{ release.title }}" class="card-thumbnail" loading="lazy">
+                            {% else %}
+                                <div class="card-thumbnail-placeholder"></div>
+                            {% endif %}
+                            
+                            <div class="play-overlay">
+                                <i class="bi bi-play-fill"></i>
+                            </div>
+                        </div>
+
+                        <div class="mt-2 text-center">
+                            <div class="release-title fw-bold text-white">{{ release.title }}</div>
+                            <div class="release-category text-muted small">{{ release.category }}</div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center text-muted py-4">
+                    <p>Новинок поки немає.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Модальне вікно для відтворення -->
+<div class="modal fade custom-video-modal" id="videoModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-white border-0 shadow-lg" style="border-radius: 16px; overflow: hidden;">
+            <div class="modal-header border-0 pb-0">
+                <h5 class="modal-title fs-6 text-truncate" id="videoModalTitle"></h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-2 p-md-3">
+                <div class="ratio ratio-16x9">
+                    <iframe id="youtubePlayer" 
+                            src="" 
+                            title="YouTube Video" 
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import VideoSlide
+from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from .forms import UserAuthForm
@@ -10,6 +10,9 @@ from .models import SiteVisit
 
 def index(request):
     slides = VideoSlide.objects.filter(is_active=True)
+    new_releases = NewRelease.objects.filter(is_active=True).order_by(
+    'order', '-created_at'
+    )[:3]
 
     visit, _ = SiteVisit.objects.get_or_create(id=1)
     SiteVisit.objects.filter(id=1).update(count=F('count') + 1)
@@ -18,6 +21,7 @@ def index(request):
     context = {
         'slides': slides,
         'visits_count': visit.count,
+        'new_releases': new_releases,
         #'videos_count': VideoWork.objects.count(),
         #'photos_count': PhotoSession.objects.count(),
     }
