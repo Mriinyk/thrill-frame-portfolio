@@ -1,6 +1,11 @@
 import re
 from django.db import models
 from django.core.exceptions import ValidationError
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    pass
 
 def validate_youtube_input(value):
     pattern = r'(?:v=|\/embed\/|\/youtu\.be\/|\/v\/|^)([a-zA-Z0-9_-]{11})'
@@ -33,3 +38,10 @@ class VideoSlide(models.Model):
         if match:
             self.youtube_id = match.group(1)
         super().save(*args, **kwargs)
+
+
+class SiteVisit(models.Model):
+  count = models.PositiveIntegerField(default=0)
+
+  def __str__(self):
+    return f"Відвідувань: {self.count}"

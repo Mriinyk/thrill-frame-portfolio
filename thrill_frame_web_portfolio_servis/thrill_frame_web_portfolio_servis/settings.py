@@ -127,3 +127,11 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
+
+AUTH_USER_MODEL = 'thrill_frame_app.User'
+
+LOGIN_URL = 'thrill_frame_app:login'
+
+LOGIN_REDIRECT_URL = '/'
+
+LOGOUT_REDIRECT_URL = '/'

@@ -18,16 +18,17 @@
             <ul class="navbar-nav me-auto align-items-center text-center pt-3 pt-lg-0 mt-2 mt-lg-0">
                 <li class="nav-item">
                     {% if user.is_authenticated %}
-                        <div class="d-flex align-items-center justify-content-center gap-2 bg-dark bg-opacity-50 rounded-pill px-3 py-1 border border-secondary border-opacity-25 shadow-sm">
-                            <span class="username-gradient fw-bold">{{ user.username }}</span>
-                            <a href="{% url 'logout' %}" class="text-white-50 text-decoration-none hover-white transition-all ms-2" title="Вийти">
-                                <i class="bi bi-box-arrow-right fs-5"></i>
-                            </a>
+                        <div class="user-nav-block d-flex align-items-center gap-2 ms-2">
+                            <span class="user-gradient-name">{{ user.username }}</span>
+                            <form action="{% url 'thrill_frame_app:logout' %}?next={{ request.path }}" method="post" class="d-inline">
+                                {% csrf_token %}
+                                <button type="submit" class="logout-icon-btn" title="Вийти" aria-label="Вийти">
+                                    <i class="bi bi-box-arrow-right"></i>
+                                </button>
+                            </form>
                         </div>
                     {% else %}
-                        <a href="{% url 'login' %}" class="btn btn-login-glass rounded-pill px-4 py-1">
-                            <i class="bi bi-person-circle me-1"></i> Увійти
-                        </a>
+                        <a href="{% url 'thrill_frame_app:login' %}?next={{ request.path }}" class="nav-link nav-link-custom">Увійти</a>
                     {% endif %}
                 </li>
             </ul>

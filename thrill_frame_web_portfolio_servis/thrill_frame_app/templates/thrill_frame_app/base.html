@@ -1,5 +1,6 @@
+<!-- Оновлений base.html -->
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -30,8 +31,25 @@
     </main>
 
     <footer class="mb-3 px-2 px-md-3 mt-auto">
-        <div class="container custom-floating-footer py-3 px-4 text-center">
-            <p class="mb-0 footer-text">&copy; 2026 Thrill Frame Production. Усі права захищені.</p>
+        <div class="container custom-floating-footer py-4 px-4">
+            <div class="row text-center g-3 align-items-center">
+                <div class="col-4">
+                    <div class="footer-stat-number">{{ visits_count|default:"0" }}</div>
+                    <div class="footer-stat-label">Кількість відвідувань сайту</div>
+                </div>
+                <div class="col-4">
+                    <div class="footer-stat-number">{{ videos_count|default:"0" }}</div>
+                    <div class="footer-stat-label">Кількість відеоробіт</div>
+                </div>
+                <div class="col-4">
+                    <div class="footer-stat-number">{{ photos_count|default:"0" }}</div>
+                    <div class="footer-stat-label">Кількість фотосесій</div>
+                </div>
+            </div>
+
+            <hr class="border-secondary opacity-25 my-3">
+
+            <p class="mb-0 footer-text text-center">&copy; 2026 Thrill Frame Production. Усі права захищені.</p>
         </div>
     </footer>
 
