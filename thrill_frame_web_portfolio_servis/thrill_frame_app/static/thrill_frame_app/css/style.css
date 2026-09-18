@@ -544,3 +544,33 @@ body {
         width: 95vw;
     }
 }
+
+/* Стилі іконок мереж */
+.about-social-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    text-decoration: none;
+    background-color: transparent;
+    border: 2px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.about-social-icon i {
+    font-size: 2.2rem;
+    background: linear-gradient(180deg, #ff3b30 0%, #d32f2f 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: inline-block;
+}
+
+.about-social-icon:hover {
+    border-color: #ff3b30;
+    background-color: rgba(255, 59, 48, 0.1);
+    box-shadow: 0 0 8px #ff3b30, 0 0 20px rgba(255, 59, 48, 0.6);
+    transform: translateY(-3px);
+}
