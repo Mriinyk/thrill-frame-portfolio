@@ -1,0 +1,65 @@
+{% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-wrapper d-flex justify-content-center" style="margin-top: 10rem; margin-bottom: 5rem;">
+    <div class="auth-card fade-in-up">
+        
+        <!-- Логотип та заголовок -->
+        <div class="text-center mb-4">
+            <img src="{% static 'thrill_frame_app/images/title_logo.png' %}" alt="Thrill Frame Logo" class="auth-logo">
+            <h2 class="auth-title mt-3">Зв'язатися з нами</h2>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-danger custom-auth-alert{% endif %} text-center mb-4" role="alert" style="background: rgba(76, 175, 80, 0.12); border: 1px solid rgba(76, 175, 80, 0.3); color: #4caf50; border-radius: 12px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <form method="post" action="{% url 'thrill_frame_app:contact' %}">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label class="form-label auth-label text-center w-100 mb-3">Оберіть соціальну мережу для зв'язку</label>
+                <div class="d-flex justify-content-center gap-4">
+                    {% for radio in form.contact_method %}
+                        <div class="custom-radio-wrapper">
+                            {{ radio.tag }}
+                            <label for="{{ radio.id_for_label }}" class="custom-radio-label">
+                                {% if radio.choice_label == 'Telegram' %}
+                                    <i class="bi bi-telegram me-2"></i>
+                                {% else %}
+                                    <i class="bi bi-instagram me-2"></i>
+                                {% endif %}
+                                {{ radio.choice_label }}
+                            </label>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label for="id_social_username" id="dynamic_username_label" class="form-label auth-label">
+                    Введіть нік
+                </label>
+                {{ form.social_username }}
+            </div>
+
+            <div class="mb-4">
+                <label for="id_message" class="form-label auth-label">
+                    Напишіть повідомлення
+                </label>
+                {{ form.message }}
+            </div>
+
+            <button type="submit" class="btn btn-auth-submit w-100 py-3 mt-2 fw-bold">
+                Надіслати
+            </button>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

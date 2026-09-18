@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import NewRelease, VideoSlide
+from .models import NewRelease, VideoSlide, ContactRequest
 
 @admin.register(VideoSlide)
 class VideoSlideAdmin(admin.ModelAdmin):
@@ -17,3 +17,11 @@ class NewReleaseAdmin(admin.ModelAdmin):
     list_editable = ('order', 'is_active')
     search_fields = ('title', 'category')
     ordering = ('order', '-created_at')
+
+
+@admin.register(ContactRequest)
+class ContactRequestAdmin(admin.ModelAdmin):
+    list_display = ('id', 'contact_method', 'social_username', 'created_at')
+    list_filter = ('contact_method', 'created_at')
+    search_fields = ('social_username', 'message')
+    readonly_fields = ('created_at',)

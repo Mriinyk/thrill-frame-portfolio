@@ -1,4 +1,5 @@
 from django import forms
+from .models import ContactRequest
 
 class UserAuthForm(forms.Form):
     username = forms.CharField(
@@ -20,3 +21,28 @@ class UserAuthForm(forms.Form):
             'required': True
         })
     )
+
+
+class ContactForm(forms.ModelForm):
+    class Meta:
+        model = ContactRequest
+        fields = ['contact_method', 'social_username', 'message']
+        widgets = {
+            'contact_method': forms.RadioSelect(attrs={'class': 'custom-radio-input'}),
+            'social_username': forms.TextInput(attrs={
+                'class': 'form-control custom-auth-input',
+                'placeholder': '@nickname',
+                'required': True
+            }),
+            'message': forms.Textarea(attrs={
+                'class': 'form-control custom-auth-input',
+                'placeholder': 'Ваше повідомлення...',
+                'rows': 4,
+                'required': True
+            })
+        }
+        labels = {
+            'contact_method': "Оберіть соціальну мережу для зв'язку",
+            'social_username': "Введіть нікнейм",
+            'message': "Напишіть повідомлення"
+        }

@@ -8,7 +8,7 @@ urlpatterns = [
     path('', views.index, name='home'),
     path('video/', views.index, name='video'),
     path('photos/', views.index, name='photos'),
-    path('contacts/', views.index, name='contacts'),
+    path('contact/', views.contact_view, name='contact'),
     path(
         'accounts/login/',
         auth_views.LoginView.as_view(template_name='thrill_frame_app/registration/login.html'),

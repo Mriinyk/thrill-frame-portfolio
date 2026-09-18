@@ -121,3 +121,20 @@ document.addEventListener('DOMContentLoaded', function () {
         youtubePlayer.src = '';
     });
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const radioButtons = document.querySelectorAll('input[name="contact_method"]');
+    const dynamicLabel = document.getElementById("dynamic_username_label");
+
+    if (radioButtons.length > 0 && dynamicLabel) {
+        radioButtons.forEach(radio => {
+            radio.addEventListener("change", function() {
+                if (this.value === 'telegram') {
+                    dynamicLabel.innerText = "Введіть Telegram нік";
+                } else if (this.value === 'instagram') {
+                    dynamicLabel.innerText = "Введіть Instagram нік";
+                }
+            });
+        });
+    }
+});

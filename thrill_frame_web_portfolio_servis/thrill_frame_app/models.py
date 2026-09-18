@@ -87,3 +87,36 @@ class NewRelease(models.Model):
                 f"https://img.youtube.com/vi/{self.youtube_id}/hqdefault.jpg"
             )
         return ""
+
+
+class ContactRequest(models.Model):
+    CONTACT_CHOICES = [
+        ('telegram', 'Telegram'),
+        ('instagram', 'Instagram'),
+    ]
+
+    contact_method = models.CharField(
+        max_length=10, 
+        choices=CONTACT_CHOICES, 
+        default='telegram',
+        verbose_name="Спосіб зв'язку"
+    )
+    social_username = models.CharField(
+        max_length=100, 
+        verbose_name="Нікнейм"
+    )
+    message = models.TextField(
+        verbose_name="Повідомлення"
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, 
+        verbose_name="Дата створення"
+    )
+
+    class Meta:
+        verbose_name = "Заявка"
+        verbose_name_plural = "Заявки"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.get_contact_method_display()}: {self.social_username}"
