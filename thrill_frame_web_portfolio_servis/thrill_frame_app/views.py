@@ -1,3 +1,5 @@
+import requests
+from django.conf import settings
 from django.shortcuts import render
 from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
@@ -7,7 +9,6 @@ from django.shortcuts import render
 from django.db.models import F
 from .models import SiteVisit, VideoWork, PhotoSession
 from django.contrib import messages
-import requests
 from .forms import ContactForm
 
 
@@ -74,45 +75,62 @@ def logout_view(request):
     return redirect(next_url)
 
 
+def send_telegram_notification(contact_instance):
+    """
+    Надсилає сповіщення в Telegram та зберігає message_id для подальшого видалення.
+    """
+    bot_token = getattr(settings, 'TELEGRAM_BOT_TOKEN', '8878616904:AAGCrj25pqf0H8i-Gd_XYVNaPleLXVb6oXY')
+    chat_id = getattr(settings, 'TELEGRAM_CHAT_ID', '610002325')
+
+    contact_method = contact_instance.contact_method
+    social_username = contact_instance.social_username
+    user_message = contact_instance.message
+
+    if contact_method == 'telegram':
+        link = f"https://t.me/{social_username.replace('@', '')}"
+    else:
+        link = f"https://instagram.com/{social_username.replace('@', '')}"
+
+    text = (
+        f"🔥 <b>Нова заявка з сайту! (#ID: {contact_instance.id})</b>\n\n"
+        f"<b>Зв'язок:</b> {contact_instance.get_contact_method_display()}\n"
+        f"<b>Нік:</b> {social_username}\n"
+        f"<b>Посилання:</b> <a href='{link}'>Перейти до профілю</a>\n\n"
+        f"<b>Повідомлення:</b>\n<i>{user_message}</i>"
+    )
+
+    url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
+    payload = {
+        'chat_id': chat_id,
+        'text': text,
+        'parse_mode': 'HTML'
+    }
+
+    try:
+        response = requests.post(url, json=payload, timeout=5)
+        if response.status_code == 200:
+            data = response.json()
+            message_id = data.get('result', {}).get('message_id')
+            if message_id:
+                contact_instance.telegram_message_id = message_id
+                contact_instance.save(update_fields=['telegram_message_id'])
+            return True
+    except Exception as e:
+        print(f"Помилка відправки Telegram сповіщення: {e}")
+    
+    return False
+
+
 def contact_view(request):
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
             contact_request = form.save()
 
-            contact_method = contact_request.contact_method
-            social_username = contact_request.social_username
-            user_message = contact_request.message
+            # Надсилаємо сповіщення та фіксуємо telegram_message_id
+            send_telegram_notification(contact_request)
 
-            BOT_TOKEN = '8878616904:AAGCrj25pqf0H8i-Gd_XYVNaPleLXVb6oXY'
-            CHAT_ID = '610002325'
-
-            if contact_method == 'telegram':
-                link = f"https://t.me/{social_username.replace('@', '')}"
-            else:
-                link = f"https://instagram.com/{social_username.replace('@', '')}"
-
-            text = (
-                f"🔥 <b>Нова заявка з сайту! (#ID: {contact_request.id})</b>\n\n"
-                f"<b>Зв'язок:</b> {contact_request.get_contact_method_display()}\n"
-                f"<b>Нік:</b> {social_username}\n"
-                f"<b>Посилання:</b> <a href='{link}'>Перейти до профілю</a>\n\n"
-                f"<b>Повідомлення:</b>\n<i>{user_message}</i>"
-            )
-
-            url = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-            payload = {
-                'chat_id': CHAT_ID,
-                'text': text,
-                'parse_mode': 'HTML'
-            }
-
-            try:
-                requests.post(url, data=payload)
-                messages.success(request, "Ваше повідомлення успішно надіслано!")
-            except Exception:
-                messages.success(request, "Ваше повідомлення успішно збережено!")
-
+            messages.success(request, "Ваше повідомлення успішно надіслано!")
             return redirect('thrill_frame_app:contact')
     else:
         form = ContactForm()

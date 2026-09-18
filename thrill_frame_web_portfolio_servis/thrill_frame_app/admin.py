@@ -21,7 +21,11 @@ class NewReleaseAdmin(admin.ModelAdmin):
 
 @admin.register(ContactRequest)
 class ContactRequestAdmin(admin.ModelAdmin):
-    list_display = ('id', 'contact_method', 'social_username', 'created_at')
+    list_display = ('id', 'contact_method', 'social_username', 'created_at', 'telegram_message_id')
     list_filter = ('contact_method', 'created_at')
     search_fields = ('social_username', 'message')
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'telegram_message_id')
+
+    def delete_queryset(self, request, queryset):
+        for obj in queryset:
+            obj.delete()
