@@ -5,7 +5,7 @@ from django.contrib.auth import login, logout, authenticate, get_user_model
 from .forms import UserAuthForm
 from django.shortcuts import render
 from django.db.models import F
-from .models import SiteVisit
+from .models import SiteVisit, VideoWork, PhotoSession
 from django.contrib import messages
 import requests
 from .forms import ContactForm
@@ -14,19 +14,16 @@ from .forms import ContactForm
 def index(request):
     slides = VideoSlide.objects.filter(is_active=True)
     new_releases = NewRelease.objects.filter(is_active=True).order_by(
-    'order', '-created_at'
+        'order', '-created_at'
     )[:3]
 
-    visit, _ = SiteVisit.objects.get_or_create(id=1)
+    # Інкремент лічильника при відвідуванні головної сторінки
+    SiteVisit.objects.get_or_create(id=1)
     SiteVisit.objects.filter(id=1).update(count=F('count') + 1)
-    visit.refresh_from_db()
 
     context = {
         'slides': slides,
-        'visits_count': visit.count,
         'new_releases': new_releases,
-        #'videos_count': VideoWork.objects.count(),
-        #'photos_count': PhotoSession.objects.count(),
     }
 
     return render(request, 'thrill_frame_app/index.html', context)

@@ -47,6 +47,19 @@ class SiteVisit(models.Model):
     return f"Відвідувань: {self.count}"
 
 
+class VideoWork(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Назва")
+
+    def __str__(self):
+        return self.title
+
+class PhotoSession(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Назва")
+
+    def __str__(self):
+        return self.title
+
+
 class NewRelease(models.Model):
     title = models.CharField("Заголовок", max_length=255)
     category = models.CharField("Категорія", max_length=100)
