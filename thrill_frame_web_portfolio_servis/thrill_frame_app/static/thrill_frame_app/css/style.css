@@ -521,15 +521,18 @@ body {
 }
 
 .release-title {
-    font-weight: 600;
-    font-size: 1.1rem;
+    font-weight: 700;
+    font-size: 1.15rem;
     color: #ffffff;
-    margin-bottom: 0.25rem;
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .release-category {
-    font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.6);
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #e0e0e0 !important;
 }
 
 /* Модальне вікно відео на 80% ширини екрана */
