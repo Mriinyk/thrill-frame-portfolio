@@ -138,3 +138,37 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 });
+
+
+// Логіка для сторінки відео
+document.addEventListener('DOMContentLoaded', function () {
+    const videoModalElement = document.getElementById('videoModal');
+    const youtubePlayer = document.getElementById('youtubePlayer');
+    const videoModalTitle = document.getElementById('videoModalTitle');
+
+    if (!videoModalElement || !youtubePlayer) return;
+
+    const bsModal = new bootstrap.Modal(videoModalElement);
+
+    // Обробник кліку на великі картки відео
+    document.querySelectorAll('.release-card-large').forEach(card => {
+        card.addEventListener('click', function () {
+            const videoId = this.getAttribute('data-video-id');
+            const videoTitle = this.getAttribute('data-video-title') || '';
+
+            if (videoId && videoId.trim() !== '' && videoId !== 'None') {
+                videoModalTitle.textContent = videoTitle;
+                // Автоматичне відтворення відео при відкритті модального вікна
+                youtubePlayer.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+                bsModal.show();
+            } else {
+                console.error('Не вдалося витягти YouTube ID. Перевірте посилання.');
+            }
+        });
+    });
+
+    // Очищення плеєра при закритті модального вікна
+    videoModalElement.addEventListener('hidden.bs.modal', function () {
+        youtubePlayer.src = '';
+    });
+});

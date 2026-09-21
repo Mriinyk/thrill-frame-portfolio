@@ -5,23 +5,23 @@
 <div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100 py-5">
     <div class="auth-card fade-in-up">
         
-        <!-- Логотип та заголовок -->
         <div class="text-center mb-4">
             <img src="{% static 'thrill_frame_app/images/title_logo.png' %}" alt="Thrill Frame Logo" class="auth-logo">
             <h2 class="auth-title mt-3">Будь ласка увійдіть у систему</h2>
         </div>
 
-        {% if form.errors %}
-            <div class="alert alert-danger custom-auth-alert text-center mb-4" role="alert">
-                Невірне ім'я користувача або пароль.
-            </div>
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %} custom-auth-alert text-center mb-4" role="alert">
+                    {{ message }}
+                </div>
+            {% endfor %}
         {% endif %}
 
         <form method="post" action="{% url 'thrill_frame_app:login' %}">
             {% csrf_token %}
-            <input type="hidden" name="next" value="{{ request.GET.next|default:'' }}">
+            <input type="hidden" name="next" value="{{ next }}">
 
-            <!-- Поле імені користувача -->
             <div class="mb-4">
                 <label for="id_username" class="form-label auth-label">
                     Створіть, або введіть існуюче ім'я користувача
@@ -29,7 +29,6 @@
                 <input type="text" name="username" id="id_username" class="form-control custom-auth-input" placeholder="Ім'я користувача" required autocomplete="username">
             </div>
 
-            <!-- Поле пароля -->
             <div class="mb-4">
                 <label for="id_password" class="form-label auth-label">
                     Впишіть пароль
@@ -37,9 +36,8 @@
                 <input type="password" name="password" id="id_password" class="form-control custom-auth-input" placeholder="Пароль" required autocomplete="current-password">
             </div>
 
-            <!-- Акцентна кнопка увійти -->
             <button type="submit" class="btn btn-auth-submit w-100 py-3 mt-2 fw-bold">
-                Увійти
+                Увійти / Зареєструватися
             </button>
         </form>
 

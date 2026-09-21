@@ -1,5 +1,6 @@
 from django import forms
-from .models import ContactRequest
+from .models import ContactRequest, VideoWork
+
 
 class UserAuthForm(forms.Form):
     username = forms.CharField(
@@ -45,4 +46,20 @@ class ContactForm(forms.ModelForm):
             'contact_method': "Оберіть соціальну мережу для зв'язку",
             'social_username': "Введіть нікнейм",
             'message': "Напишіть повідомлення"
+        }
+
+
+class VideoWorkForm(forms.ModelForm):
+    class Meta:
+        model = VideoWork
+        fields = ['title', 'video_url']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control custom-auth-input', 
+                'placeholder': 'Введіть заголовок відео'
+            }),
+            'video_url': forms.URLInput(attrs={
+                'class': 'form-control custom-auth-input', 
+                'placeholder': '[https://www.youtube.com/watch?v=](https://www.youtube.com/watch?v=)...'
+            }),
         }

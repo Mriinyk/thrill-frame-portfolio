@@ -4,12 +4,14 @@ from django.shortcuts import render
 from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
+from django.contrib.auth.models import User
 from .forms import UserAuthForm
 from django.shortcuts import render
 from django.db.models import F
 from .models import SiteVisit, VideoWork, PhotoSession
 from django.contrib import messages
 from .forms import ContactForm
+from .forms import VideoWorkForm
 
 
 def index(request):
@@ -32,46 +34,62 @@ def index(request):
 
 User = get_user_model()
 
-def login_view(request):
-    next_url = request.GET.get('next') or request.POST.get('next') or 'index'
-    
-    if request.user.is_authenticated:
-        return redirect(next_url)
 
-    error_message = None
+def login_view(request):
+    # 1. Отримуємо next з POST/GET, а якщо його немає — з HTTP_REFERER (адреси сторінки, з якої перейшли)
+    next_url = request.POST.get('next') or request.GET.get('next')
+    
+    if not next_url:
+        referer = request.META.get('HTTP_REFERER', '')
+        # Перевіряємо, щоб referer був з нашого сайту і це не сама сторінка логіну
+        if referer and 'login' not in referer:
+            next_url = referer
 
     if request.method == 'POST':
-        form = UserAuthForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password']
+        user_name = request.POST.get('username', '').strip()
+        user_pass = request.POST.get('password', '').strip()
 
-            try:
-                # Якщо користувач існує — перевіряємо пароль
-                user_obj = User.objects.get(username=username)
-                user = authenticate(request, username=username, password=password)
-                if user is not None:
-                    login(request, user)
-                    return redirect(next_url)
-                else:
-                    error_message = "Невірний пароль для цього користувача."
-            except User.DoesNotExist:
-                # Якщо користувача немає — реєструємо та входимо
-                user = User.objects.create_user(username=username, password=password)
-                login(request, user)
+        if not user_name or not user_pass:
+            messages.error(request, "Заповніть усі поля.")
+            return render(request, 'thrill_frame_app/registration/login.html', {'next': next_url})
+
+        user = authenticate(request, username=user_name, password=user_pass)
+
+        if user is not None:
+            login(request, user)
+            request.session.set_expiry(1209600)
+            if next_url:
                 return redirect(next_url)
-    else:
-        form = UserAuthForm()
+            return redirect('thrill_frame_app:home')
+        else:
+            if User.objects.filter(username=user_name).exists():
+                messages.error(request, "Користувач з таким ім'ям існує, але пароль невірний.")
+            else:
+                try:
+                    User.objects.create_user(username=user_name, password=user_pass)
+                    new_user = authenticate(request, username=user_name, password=user_pass)
+                    if new_user is not None:
+                        login(request, new_user)
+                        request.session.set_expiry(1209600)
+                        if next_url:
+                            return redirect(next_url)
+                        return redirect('thrill_frame_app:home')
+                except Exception as e:
+                    messages.error(request, f"Помилка створення: {e}")
 
-    return render(request, 'thrill_frame_app/login.html', {
-        'form': form,
-        'next': next_url,
-        'error_message': error_message
-    })
+    return render(request, 'thrill_frame_app/registration/login.html', {'next': next_url})
+
 
 def logout_view(request):
-    next_url = request.GET.get('next', 'index')
+    # Визначаємо сторінку, з якої користувач натиснув "Вийти"
+    next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
+    
     logout(request)
+
+    # Якщо сторінка виходу/входу зациклюється, повертаємо на головну
+    if 'login' in next_url or 'logout' in next_url:
+        return redirect('thrill_frame_app:home')
+
     return redirect(next_url)
 
 
@@ -136,3 +154,22 @@ def contact_view(request):
         form = ContactForm()
 
     return render(request, 'thrill_frame_app/contact.html', {'form': form})
+
+
+def video_page(request):
+    videos = VideoWork.objects.all()
+    return render(request, 'thrill_frame_app/videos.html', {'videos': videos})
+
+def add_video(request):
+    if not request.user.is_superuser:
+        return redirect('thrill_frame_app:video_page')
+        
+    if request.method == 'POST':
+        form = VideoWorkForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('thrill_frame_app:video_page')
+    else:
+        form = VideoWorkForm()
+        
+    return render(request, 'thrill_frame_app/add_video.html', {'form': form})

@@ -133,9 +133,9 @@ AUTH_USER_MODEL = 'thrill_frame_app.User'
 
 LOGIN_URL = 'thrill_frame_app:login'
 
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = 'thrill_frame_app:index'
 
-LOGOUT_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = 'thrill_frame_app:login'
 
 TELEGRAM_BOT_TOKEN = '8878616904:AAGCrj25pqf0H8i-Gd_XYVNaPleLXVb6oXY'
 

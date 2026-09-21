@@ -610,3 +610,74 @@ body {
 textarea.custom-auth-input {
     resize: none;
 }
+
+/* Сторінка відео */
+
+/* Відступ контейнера від навбару */
+.videos-page-wrapper {
+    margin-top: 9rem;
+    margin-bottom: 5rem;
+}
+
+/* Кнопка додавання відео для суперюзера (виправлена підсвітка строго від центру) */
+.add-video-btn {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 1000;
+    background: linear-gradient(135deg, #ff3b30 0%, #a80000 100%);
+    color: #ffffff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 25px rgba(255, 59, 48, 0.5);
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    font-size: 26px;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.add-video-btn:hover {
+    transform: translateY(-50%) scale(1.12);
+    box-shadow: 0 0 35px rgba(255, 59, 48, 0.85);
+    color: #ffffff;
+}
+
+/* Великі картки відео по центру */
+.video-grid-container {
+    max-width: 1000px; /* Обмежуємо ширину для великого центрування */
+    margin: 0 auto;
+}
+
+.release-card-large {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    padding: 16px;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.release-card-large:hover {
+    transform: translateY(-6px);
+    border-color: rgba(255, 59, 48, 0.4);
+    box-shadow: 0 12px 30px rgba(255, 59, 48, 0.2);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Модальне вікно (стилі з новинок) */
+.custom-video-modal .modal-dialog {
+    max-width: 80vw;
+    width: 80vw;
+}
+
+@media (max-width: 768px) {
+    .custom-video-modal .modal-dialog {
+        max-width: 95vw;
+        width: 95vw;
+    }
+}

@@ -53,8 +53,23 @@ class SiteVisit(models.Model):
         return f"Відвідувань: {self.count}"
 
 
+from django.db import models
+import re
+
 class VideoWork(models.Model):
     title = models.CharField(max_length=255, verbose_name="Назва")
+    video_url = models.URLField(verbose_name="Посилання на відео")
+
+    @property
+    def youtube_id(self):
+        match = re.search(r'(?:v=|/)([0-9A-Za-z_-]{11}).*', self.video_url)
+        return match.group(1) if match else None
+
+    @property
+    def thumbnail_url(self):
+        if self.youtube_id:
+            return f"https://img.youtube.com/vi/{self.youtube_id}/maxresdefault.jpg"
+        return ""
 
     def __str__(self):
         return self.title

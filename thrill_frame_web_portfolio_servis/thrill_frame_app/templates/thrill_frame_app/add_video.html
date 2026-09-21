@@ -1,0 +1,41 @@
+{% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-wrapper d-flex justify-content-center" style="margin-top: 10rem; margin-bottom: 5rem;">
+    <div class="auth-card fade-in-up">
+        
+        <div class="text-center mb-4">
+            <h2 class="auth-title mt-3">Додати нове відео</h2>
+        </div>
+
+        <form method="post" action="{% url 'thrill_frame_app:add_video' %}">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="form-label auth-label">
+                    Заголовок відео
+                </label>
+                {{ form.title }}
+            </div>
+
+            <div class="mb-4">
+                <label for="{{ form.video_url.id_for_label }}" class="form-label auth-label">
+                    Посилання на відео
+                </label>
+                {{ form.video_url }}
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                <a href="{% url 'thrill_frame_app:video_page' %}" class="btn w-50 py-3 fw-bold" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    Скасувати
+                </a>
+                <button type="submit" class="btn btn-auth-submit w-50 py-3 fw-bold">
+                    Опублікувати
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}
