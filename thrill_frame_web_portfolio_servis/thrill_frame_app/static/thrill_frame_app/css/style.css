@@ -681,3 +681,37 @@ textarea.custom-auth-input {
         width: 95vw;
     }
 }
+
+/* Кнопки дій (лайк, коментарі, поширення) */
+.action-btn {
+    background: transparent;
+    border: none;
+    color: rgba(255, 255, 255, 0.7);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.action-btn:hover, .action-btn.liked {
+    color: #ff3b30;
+}
+
+/* Червоне сяйво для активованого лайку */
+.action-btn.liked svg {
+    filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.8));
+}
+
+/* Блок коментарів у темному скляному стилі сайту */
+.comments-section {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(10px);
+}
+
+.hover-red:hover {
+    color: #ff3b30 !important;
+    transition: color 0.2s ease;
+}

@@ -53,12 +53,19 @@ class SiteVisit(models.Model):
         return f"Відвідувань: {self.count}"
 
 
-from django.db import models
-import re
-
 class VideoWork(models.Model):
     title = models.CharField(max_length=255, verbose_name="Назва")
     video_url = models.URLField(verbose_name="Посилання на відео")
+    likes = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, 
+        related_name='liked_videos', 
+        blank=True, 
+        verbose_name="Вподобання"
+    )
+
+    class Meta:
+        verbose_name = "Відеоробота"
+        verbose_name_plural = "Відеороботи"
 
     @property
     def youtube_id(self):
@@ -71,8 +78,43 @@ class VideoWork(models.Model):
             return f"https://img.youtube.com/vi/{self.youtube_id}/maxresdefault.jpg"
         return ""
 
+    def total_likes(self):
+        return self.likes.count()
+
     def __str__(self):
         return self.title
+
+
+class VideoComment(models.Model):
+    video = models.ForeignKey(
+        VideoWork, 
+        on_delete=models.CASCADE, 
+        related_name='comments', 
+        verbose_name="Відео"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, 
+        on_delete=models.CASCADE, 
+        verbose_name="Автор"
+    )
+    parent = models.ForeignKey(
+        'self', 
+        null=True, 
+        blank=True, 
+        on_delete=models.CASCADE, 
+        related_name='replies', 
+        verbose_name="Батьківський коментар"
+    )
+    text = models.TextField(verbose_name="Текст коментаря")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+
+    class Meta:
+        verbose_name = "Коментар"
+        verbose_name_plural = "Коментарі"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.user.username}: {self.text[:30]}"
 
 
 class PhotoSession(models.Model):
@@ -118,9 +160,7 @@ class NewRelease(models.Model):
     @property
     def thumbnail_url(self):
         if self.youtube_id:
-            return (
-                f"https://img.youtube.com/vi/{self.youtube_id}/hqdefault.jpg"
-            )
+            return f"https://img.youtube.com/vi/{self.youtube_id}/hqdefault.jpg"
         return ""
 
 
@@ -163,7 +203,6 @@ class ContactRequest(models.Model):
         return f"{self.get_contact_method_display()}: {self.social_username}"
 
 
-# Виправлено sender=Contact на sender=ContactRequest
 @receiver(pre_delete, sender=ContactRequest)
 def delete_telegram_message_on_delete(sender, instance, **kwargs):
     if instance.telegram_message_id:

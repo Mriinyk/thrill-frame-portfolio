@@ -1,0 +1,26 @@
+<div class="single-comment p-2 rounded-3" id="comment-{{ comment.id }}" style="background: rgba(255, 255, 255, 0.03);">
+    <div class="d-flex justify-content-between align-items-center">
+        <span class="user-gradient-name" style="font-size: 0.85rem;">{{ comment.user.username }}</span>
+        <small class="text-muted" style="font-size: 0.75rem;">{{ comment.created_at|date:"d.m.Y H:i" }}</small>
+    </div>
+    <p class="text-white mb-1 mt-1" style="font-size: 0.9rem;">{{ comment.text }}</p>
+
+    {% if user.is_authenticated %}
+        <button class="btn btn-link text-decoration-none text-muted p-0 border-0" style="font-size: 0.75rem;" onclick="toggleReplyInput({{ comment.id }})">
+            Відповісти
+        </button>
+        <div class="reply-input-wrapper d-none mt-2" id="reply-form-{{ comment.id }}">
+            <textarea id="reply-text-{{ comment.id }}" class="form-control custom-auth-input" rows="1" placeholder="Ваша відповідь..."></textarea>
+            <div class="text-end mt-1">
+                <button class="btn btn-auth-submit btn-sm px-2 py-1" style="font-size: 0.75rem;" onclick="submitComment({{ comment.video.id }}, {{ comment.id }})">Опублікувати</button>
+            </div>
+        </div>
+    {% endif %}
+
+    <!-- Відповіді -->
+    <div class="replies-list ms-3 mt-2 border-start border-secondary ps-2" id="replies-{{ comment.id }}">
+        {% for reply in comment.replies.all %}
+            {% include "thrill_frame_app/includes/comment_item.html" with comment=reply %}
+        {% endfor %}
+    </div>
+</div>

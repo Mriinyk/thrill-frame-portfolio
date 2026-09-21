@@ -12,19 +12,18 @@
     </a>
 {% endif %}
 
-<!-- Контейнер з відступом 9rem від навбару -->
+<!-- Контейнер з відступом від навбару -->
 <div class="container videos-page-wrapper">
-    <!-- Заголовок вилучено за вимогою -->
-
     <div class="video-grid-container">
         <div class="row g-4 justify-content-center">
             {% for video in videos %}
-                <div class="col-12 col-md-10 col-lg-8">
-                    <div class="release-card-large" 
-                         data-video-id="{{ video.youtube_id }}" 
-                         data-video-title="{{ video.title }}">
+                <div class="col-12 col-md-10 col-lg-8" id="video-{{ video.id }}">
+                    <div class="release-card-large position-relative">
                         
-                        <div class="card-thumbnail-wrapper">
+                        <!-- 1. ЗОНА КЛІКУ ВІДЕО: Перенесено data-атрибути та клас video-play-trigger сюди -->
+                        <div class="card-thumbnail-wrapper video-play-trigger cursor-pointer" 
+                             data-video-id="{{ video.youtube_id }}" 
+                             data-video-title="{{ video.title }}">
                             {% if video.thumbnail_url %}
                                 <img src="{{ video.thumbnail_url }}" alt="{{ video.title }}" class="card-thumbnail" loading="lazy">
                             {% else %}
@@ -36,8 +35,105 @@
                             </div>
                         </div>
 
+                        <!-- 2. ИНФОРМАЦІЯ ТА ПАНЕЛЬ ДІЙ (Окремо від зони відтворення) -->
                         <div class="mt-3 text-center">
                             <div class="release-title fw-bold text-white fs-4">{{ video.title }}</div>
+                            
+                            <br> <!-- Відступ -->
+
+                            <!-- Панель дій -->
+                            <div class="video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
+                                <!-- Лайк -->
+                                <button type="button" 
+                                        class="action-btn like-btn {% if user in video.likes.all %}liked{% endif %}" 
+                                        {% if user.is_authenticated %}
+                                            onclick="toggleLike(event, {{ video.id }})"
+                                        {% else %}
+                                            disabled title="Авторизуйтесь, щоб поставити лайк"
+                                        {% endif %}>
+                                    <i class="bi bi-heart-fill icon-like"></i>
+                                    <span id="likes-count-{{ video.id }}">{{ video.total_likes }}</span>
+                                </button>
+
+                                <!-- Коментарі -->
+                                <button type="button" 
+                                        class="action-btn" 
+                                        data-bs-toggle="collapse" 
+                                        data-bs-target="#commentsBlock-{{ video.id }}" 
+                                        aria-expanded="false">
+                                    <i class="bi bi-chat-left-text-fill"></i>
+                                    <span id="comments-count-{{ video.id }}">{{ video.comments.count }}</span>
+                                </button>
+
+                                <!-- Поділитися -->
+                                <button type="button" 
+                                        class="action-btn" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#shareModal-{{ video.id }}">
+                                    <i class="bi bi-share-fill"></i>
+                                    <span>Поділитися</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- РОЗГОРТАЙМИЙ БЛОК КОМЕНТАРІВ -->
+                        <div class="collapse mt-3 text-start" id="commentsBlock-{{ video.id }}">
+                            <div class="comments-section p-3 rounded-4">
+                                {% if user.is_authenticated %}
+                                    <div class="comment-input-wrapper mb-3">
+                                        <span class="user-gradient-name d-block mb-1" style="font-size: 0.95rem;">{{ user.username }}</span>
+                                        <div class="position-relative">
+                                            <textarea id="comment-text-{{ video.id }}" class="form-control custom-auth-input pe-5" rows="2" placeholder="Залишіть свій коментар..."></textarea>
+                                            <button type="button" class="btn btn-auth-submit btn-sm position-absolute bottom-0 end-0 m-2 px-3" onclick="submitComment({{ video.id }})">
+                                                Опублікувати
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p class="text-muted small text-center mb-2">Увійдіть на сайт, щоб залишати коментарі.</p>
+                                {% endif %}
+
+                                <!-- Список коментарів -->
+                                <div id="comments-list-{{ video.id }}" class="d-flex flex-column gap-2 mt-3">
+                                    {% for comment in video.comments.all %}
+                                        {% if not comment.parent %}
+                                            {% include "thrill_frame_app/includes/comment_item.html" with comment=comment %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- МОДАЛЬНЕ ВІКНО «ПОДІЛИТИСЯ» -->
+                    <div class="modal fade" id="shareModal-{{ video.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content auth-card p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="modal-title text-white fw-bold fs-5">Поділитися відео</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-around my-3 fs-2">
+                                    <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}%23video-{{ video.id }}" target="_blank" class="text-white hover-red" title="Telegram">
+                                        <i class="bi bi-telegram"></i>
+                                    </a>
+                                    <a href="viber://forward?text={{ request.build_absolute_uri }}%23video-{{ video.id }}" target="_blank" class="text-white hover-red" title="Viber">
+                                        <i class="bi bi-chat-left-dots-fill"></i>
+                                    </a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}%23video-{{ video.id }}" target="_blank" class="text-white hover-red" title="Facebook">
+                                        <i class="bi bi-facebook"></i>
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}%23video-{{ video.id }}" target="_blank" class="text-white hover-red" title="WhatsApp">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+                                </div>
+
+                                <div class="input-group mt-2">
+                                    <input type="text" class="form-control custom-auth-input" id="shareLink-{{ video.id }}" value="{{ request.build_absolute_uri }}#video-{{ video.id }}" readonly>
+                                    <button type="button" class="btn btn-auth-submit px-3" onclick="copyShareLink({{ video.id }})">Копіювати</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

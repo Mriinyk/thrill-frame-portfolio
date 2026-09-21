@@ -1,6 +1,6 @@
 import requests
 from django.conf import settings
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
@@ -8,10 +8,12 @@ from django.contrib.auth.models import User
 from .forms import UserAuthForm
 from django.shortcuts import render
 from django.db.models import F
-from .models import SiteVisit, VideoWork, PhotoSession
+from .models import SiteVisit, VideoWork, PhotoSession, VideoComment
 from django.contrib import messages
 from .forms import ContactForm
 from .forms import VideoWorkForm
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
 
 
 def index(request):
@@ -171,3 +173,43 @@ def add_video(request):
         form = VideoWorkForm()
         
     return render(request, 'thrill_frame_app/add_video.html', {'form': form})
+
+
+@login_required
+def toggle_like(request, video_id):
+    if request.method == "POST":
+        video = get_object_or_404(VideoWork, id=video_id)
+        if video.likes.filter(id=request.user.id).exists():
+            video.likes.remove(request.user)
+            liked = False
+        else:
+            video.likes.add(request.user)
+            liked = True
+        return JsonResponse({'liked': liked, 'total_likes': video.total_likes()})
+    return JsonResponse({'error': 'Invalid request'}, status=400)
+
+
+@login_required
+def add_comment(request, video_id):
+    if request.method == "POST":
+        video = get_object_or_404(VideoWork, id=video_id)
+        text = request.POST.get('text', '').strip()
+        parent_id = request.POST.get('parent_id')
+        
+        if text:
+            parent_comment = VideoComment.objects.get(id=parent_id) if parent_id else None
+            comment = VideoComment.objects.create(
+                video=video,
+                user=request.user,
+                parent=parent_comment,
+                text=text
+            )
+            return JsonResponse({
+                'status': 'success',
+                'username': comment.user.username,
+                'text': comment.text,
+                'created_at': comment.created_at.strftime('%d.%m.%Y %H:%M'),
+                'comment_id': comment.id,
+                'parent_id': parent_id
+            })
+    return JsonResponse({'error': 'Invalid text'}, status=400)
