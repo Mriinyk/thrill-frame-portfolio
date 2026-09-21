@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import NewRelease, VideoSlide, ContactRequest
+from .models import NewRelease, VideoSlide, ContactRequest, VideoComment
 
 @admin.register(VideoSlide)
 class VideoSlideAdmin(admin.ModelAdmin):
@@ -29,3 +29,10 @@ class ContactRequestAdmin(admin.ModelAdmin):
     def delete_queryset(self, request, queryset):
         for obj in queryset:
             obj.delete()
+
+@admin.register(VideoComment)
+class VideoCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'video', 'text', 'created_at', 'parent')
+    list_filter = ('created_at',)
+    search_fields = ('text', 'user__username')
+    raw_id_fields = ('user', 'video', 'parent')
