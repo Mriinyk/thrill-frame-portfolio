@@ -81,15 +81,13 @@ def login_view(request):
 
 
 def logout_view(request):
-    # Визначаємо сторінку, з якої користувач натиснув "Вийти"
     next_url = request.GET.get('next') or request.META.get('HTTP_REFERER') or '/'
-    
     logout(request)
-
-    # Якщо сторінка виходу/входу зациклюється, повертаємо на головну
+    
+    # Запобігаємо зацикленню, якщо next вказує на сторінку входу чи виходу
     if 'login' in next_url or 'logout' in next_url:
         return redirect('thrill_frame_app:home')
-
+        
     return redirect(next_url)
 
 
