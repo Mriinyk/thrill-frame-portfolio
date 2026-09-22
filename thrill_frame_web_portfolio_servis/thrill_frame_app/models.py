@@ -57,25 +57,31 @@ class VideoWork(models.Model):
     title = models.CharField(max_length=255, verbose_name="Назва")
     video_url = models.URLField(verbose_name="Посилання на відео")
     likes = models.ManyToManyField(
-        settings.AUTH_USER_MODEL, 
-        related_name='liked_videos', 
-        blank=True, 
-        verbose_name="Вподобання"
+        settings.AUTH_USER_MODEL,
+        related_name="liked_videos",
+        blank=True,
+        verbose_name="Вподобання",
+    )
+    created_at = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата створення"
     )
 
     class Meta:
         verbose_name = "Відеоробота"
         verbose_name_plural = "Відеороботи"
+        ordering = ["-created_at", "-id"]
 
     @property
     def youtube_id(self):
-        match = re.search(r'(?:v=|/)([0-9A-Za-z_-]{11}).*', self.video_url)
+        match = re.search(r"(?:v=|/)([0-9A-Za-z_-]{11}).*", self.video_url)
         return match.group(1) if match else None
 
     @property
     def thumbnail_url(self):
         if self.youtube_id:
-            return f"https://img.youtube.com/vi/{self.youtube_id}/maxresdefault.jpg"
+            return (
+                f"https://img.youtube.com/vi/{self.youtube_id}/maxresdefault.jpg"
+            )
         return ""
 
     def total_likes(self):

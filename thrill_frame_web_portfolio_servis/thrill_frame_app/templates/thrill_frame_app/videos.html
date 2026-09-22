@@ -14,6 +14,21 @@
 
 <!-- Контейнер з відступом від навбару -->
 <div class="container videos-page-wrapper">
+    
+    <!-- ПОЛЕ ПОШУКУ -->
+    <div class="row justify-content-center mb-5 mt-4">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form method="GET" action="" style="position: relative;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук відео..." 
+                    class="form-control text-white shadow-none search-input" 
+                    style="background-color: #212529; border: 1px solid #343a40; border-radius: 50px; padding: 15px 25px; padding-right: 55px;">
+                <button type="submit" class="search-btn" title="Шукати">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
     <div class="video-grid-container">
         <div class="row g-4 justify-content-center">
             {% for video in videos %}
@@ -41,11 +56,11 @@
                             
                             <br> <!-- Відступ -->
 
-                            <!-- Контейнер для нижньої панелі відео -->
-                            <div class="d-flex w-100 align-items-center {% if request.user.is_superuser %}justify-content-between{% else %}justify-content-center{% endif %} mt-3">
+                            <!-- HTML структура: розділіть кнопки на дві групи -->
+                            <div class="card-actions d-flex w-100 align-items-center {% if request.user.is_superuser %}justify-content-between{% else %}justify-content-center{% endif %} mt-3">
                                 
-                                <!-- Ліва частина (або по центру, якщо не адмін): Лайки, коментарі, поділитися -->
-                                <div class="video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
+                                <!-- Соціальні кнопки: Лайк, Коментар, Поділитися -->
+                                <div class="social-actions video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
                                     <!-- Лайк -->
                                     <button type="button" 
                                             class="action-btn like-btn {% if user in video.likes.all %}liked{% endif %}" 
@@ -78,7 +93,7 @@
                                     </button>
                                 </div>
 
-                                <!-- Права частина: Адмін-панель з'являється ТІЛЬКИ для суперюзера -->
+                                <!-- Адмін-кнопки: Оновити, Видалити -->
                                 {% if request.user.is_superuser %}
                                 <div class="admin-actions d-flex gap-2">
                                     <a href="{% url 'thrill_frame_app:video_update' video.id %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
@@ -161,6 +176,46 @@
             {% endfor %}
         </div>
     </div>
+
+    <!-- ПАГІНАЦІЯ -->
+    {% if is_paginated %}
+    <div class="row justify-content-center mt-5 mb-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination custom-pagination justify-content-center m-0">
+                
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link fw-bold shadow">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link shadow-sm" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
 </div>
 
 <!-- Модальне вікно для відтворення відео -->

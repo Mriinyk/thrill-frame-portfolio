@@ -742,3 +742,110 @@ textarea:focus {
     box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
     outline: none;
 }
+
+/* Стиль для плейсхолдера в інпуті пошуку */
+.search-input::placeholder {
+    color: #a0a0a0 !important; /* Світло-сірий колір */
+    opacity: 0.8;             /* Чіткість */
+}
+
+.search-btn {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #ff3b30;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: transform 0.2s ease, color 0.2s ease, filter 0.2s ease;
+    padding: 0;
+    outline: none;
+}
+
+/* Ефект при наведенні (Hover) */
+.search-btn:hover {
+    color: #ff6259;
+    transform: translateY(-50%) scale(1.18);
+    filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.6));
+}
+
+/* Ефект при натисканні (Active) */
+.search-btn:active {
+    transform: translateY(-50%) scale(0.92);
+    filter: drop-shadow(0 0 3px rgba(255, 59, 48, 0.4));
+}
+
+/* Перевизначення стилів автозаповнення браузера для поля пошуку */
+.search-input:-webkit-autofill,
+.search-input:-webkit-autofill:hover, 
+.search-input:-webkit-autofill:focus, 
+.search-input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px #212529 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+/* CSS стилі кнопок Оновити та Видалити */
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.social-actions, .admin-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px; /* Відстань між кнопками */
+}
+
+/* Медіа-запит для адаптивності на мобільних пристроях */
+@media (max-width: 576px) {
+    .card-actions {
+        flex-direction: column;
+        align-items: center;
+        gap: 15px; /* Відстань між верхнім та нижнім рядом */
+    }
+
+    .admin-actions {
+        width: 100%;
+        justify-content: center; 
+    }
+}
+
+/* Стилі пагінації */
+.custom-pagination .page-item {
+        margin: 0 4px;
+    }
+    .custom-pagination .page-link {
+        background-color: #212529;
+        border: 1px solid #343a40;
+        color: #fff;
+        border-radius: 50% !important;
+        width: 45px;
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+    }
+    .custom-pagination .page-link:hover {
+        background-color: #2c3034;
+        border-color: #ff3b30;
+        color: #ff3b30;
+        box-shadow: 0 0 10px rgba(255, 59, 48, 0.2);
+    }
+    .custom-pagination .page-item.active .page-link {
+        background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
+        border: none;
+        color: #fff;
+        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+        pointer-events: none;
+    }
+    .custom-pagination .page-link:focus {
+        box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.25);
+        outline: none;
+    }

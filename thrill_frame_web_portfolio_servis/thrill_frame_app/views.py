@@ -2,11 +2,11 @@ import requests
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_object_or_404
+from django.db.models import Q, F
 from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.models import User
-from .forms import UserAuthForm
 from django.shortcuts import render
 from django.db.models import F
 from .models import SiteVisit, VideoWork, PhotoSession, VideoComment
@@ -16,6 +16,7 @@ from .forms import VideoWorkForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic import ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
 
 
@@ -159,10 +160,6 @@ def contact_view(request):
     return render(request, 'thrill_frame_app/contact.html', {'form': form})
 
 
-def video_page(request):
-    videos = VideoWork.objects.all()
-    return render(request, 'thrill_frame_app/videos.html', {'videos': videos})
-
 def add_video(request):
     if not request.user.is_superuser:
         return redirect('thrill_frame_app:video_page')
@@ -236,3 +233,22 @@ class VideoDeleteView(AdminRequiredMixin, DeleteView):
     model = VideoWork
     template_name = 'thrill_frame_app/video_confirm_delete.html'
     success_url = reverse_lazy('thrill_frame_app:video_page')
+
+
+class VideoListView(ListView):
+    model = VideoWork
+    template_name = "thrill_frame_app/videos.html"
+    context_object_name = "videos"
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset = VideoWork.objects.all().order_by("-created_at", "-id")
+        query = self.request.GET.get("q")
+        if query:
+            queryset = queryset.filter(Q(title__icontains=query))
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["search_query"] = self.request.GET.get("q", "")
+        return context
