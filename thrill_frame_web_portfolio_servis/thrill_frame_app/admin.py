@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth import get_user_model
+from django.contrib.auth.admin import UserAdmin
 from .models import NewRelease, VideoSlide, ContactRequest, VideoComment
 
 @admin.register(VideoSlide)
@@ -36,3 +38,18 @@ class VideoCommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     search_fields = ('text', 'user__username')
     raw_id_fields = ('user', 'video', 'parent')
+
+
+User = get_user_model()
+
+# Безпечно перезапускаємо реєстрацію User для відображення в панелі
+try:
+    admin.site.unregister(User)
+except admin.sites.NotRegistered:
+    pass
+
+@admin.register(User)
+class CustomUserAdmin(UserAdmin):
+    list_display = ('username', 'email', 'is_active', 'is_staff', 'date_joined')
+    search_fields = ('username', 'email')
+    list_filter = ('is_active', 'is_staff')
