@@ -203,6 +203,11 @@ function toggleReplyInput(commentId) {
 }
 
 // Надсилання коментарів
+function toggleReplyInput(commentId) {
+    const form = document.getElementById(`reply-form-${commentId}`);
+    if (form) form.classList.toggle('d-none');
+}
+
 function submitComment(videoId, parentId = null) {
     const textInput = parentId 
         ? document.getElementById(`reply-text-${parentId}`) 
@@ -234,7 +239,7 @@ function submitComment(videoId, parentId = null) {
                 <div class="single-comment p-2 rounded-3 mt-2" style="background: rgba(255, 255, 255, 0.03);">
                     <div class="d-flex justify-content-between align-items-center">
                         <span class="user-gradient-name" style="font-size: 0.85rem;">${data.username}</span>
-                        <small class="text-muted" style="font-size: 0.75rem;">${data.created_at}</small>
+                        <small class="text-white" style="font-size: 0.75rem;">${data.created_at}</small>
                     </div>
                     <p class="text-white mb-1 mt-1" style="font-size: 0.9rem;">${data.text}</p>
                 </div>
@@ -251,10 +256,14 @@ function submitComment(videoId, parentId = null) {
                 if (commentsList) commentsList.insertAdjacentHTML('afterbegin', commentHtml);
             }
 
-            // Оновлення лічильника коментарів, якщо є відповвідне поле
             const commentsCountEl = document.getElementById(`comments-count-${videoId}`);
-            if (commentsCountEl && data.comments_count !== undefined) {
-                commentsCountEl.innerText = data.comments_count;
+            if (commentsCountEl) {
+                if (data.comments_count !== undefined) {
+                    commentsCountEl.innerText = data.comments_count;
+                } else {
+                    let currentCount = parseInt(commentsCountEl.innerText) || 0;
+                    commentsCountEl.innerText = currentCount + 1;
+                }
             }
         }
     })
