@@ -41,38 +41,55 @@
                             
                             <br> <!-- Відступ -->
 
-                            <!-- Панель дій -->
-                            <div class="video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
-                                <!-- Лайк -->
-                                <button type="button" 
-                                        class="action-btn like-btn {% if user in video.likes.all %}liked{% endif %}" 
-                                        {% if user.is_authenticated %}
-                                            onclick="toggleLike(event, {{ video.id }})"
-                                        {% else %}
-                                            disabled title="Авторизуйтесь, щоб поставити лайк"
-                                        {% endif %}>
-                                    <i class="bi bi-heart-fill icon-like"></i>
-                                    <span id="likes-count-{{ video.id }}">{{ video.total_likes }}</span>
-                                </button>
+                            <!-- Контейнер для нижньої панелі відео -->
+                            <div class="d-flex w-100 align-items-center {% if request.user.is_superuser %}justify-content-between{% else %}justify-content-center{% endif %} mt-3">
+                                
+                                <!-- Ліва частина (або по центру, якщо не адмін): Лайки, коментарі, поділитися -->
+                                <div class="video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
+                                    <!-- Лайк -->
+                                    <button type="button" 
+                                            class="action-btn like-btn {% if user in video.likes.all %}liked{% endif %}" 
+                                            {% if user.is_authenticated %}
+                                                onclick="toggleLike(event, {{ video.id }})"
+                                            {% else %}
+                                                disabled title="Авторизуйтесь, щоб поставити лайк"
+                                            {% endif %}>
+                                        <i class="bi bi-heart-fill icon-like"></i>
+                                        <span id="likes-count-{{ video.id }}">{{ video.total_likes }}</span>
+                                    </button>
 
-                                <!-- Коментарі -->
-                                <button type="button" 
-                                        class="action-btn" 
-                                        data-bs-toggle="collapse" 
-                                        data-bs-target="#commentsBlock-{{ video.id }}" 
-                                        aria-expanded="false">
-                                    <i class="bi bi-chat-left-text-fill"></i>
-                                    <span id="comments-count-{{ video.id }}">{{ video.comments.count }}</span>
-                                </button>
+                                    <!-- Коментарі -->
+                                    <button type="button" 
+                                            class="action-btn" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#commentsBlock-{{ video.id }}" 
+                                            aria-expanded="false">
+                                        <i class="bi bi-chat-left-text-fill"></i>
+                                        <span id="comments-count-{{ video.id }}">{{ video.comments.count }}</span>
+                                    </button>
 
-                                <!-- Поділитися -->
-                                <button type="button" 
-                                        class="action-btn" 
-                                        data-bs-toggle="modal" 
-                                        data-bs-target="#shareModal-{{ video.id }}">
-                                    <i class="bi bi-share-fill"></i>
-                                    <span>Поділитися</span>
-                                </button>
+                                    <!-- Поділитися -->
+                                    <button type="button" 
+                                            class="action-btn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#shareModal-{{ video.id }}">
+                                        <i class="bi bi-share-fill"></i>
+                                        <span>Поділитися</span>
+                                    </button>
+                                </div>
+
+                                <!-- Права частина: Адмін-панель з'являється ТІЛЬКИ для суперюзера -->
+                                {% if request.user.is_superuser %}
+                                <div class="admin-actions d-flex gap-2">
+                                    <a href="{% url 'thrill_frame_app:video_update' video.id %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                        <i class="fas fa-edit"></i> Оновити
+                                    </a>
+                                    <a href="{% url 'thrill_frame_app:video_delete' video.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        <i class="fas fa-trash"></i> Видалити
+                                    </a>
+                                </div>
+                                {% endif %}
+                                
                             </div>
                         </div>
 

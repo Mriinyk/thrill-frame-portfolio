@@ -1,0 +1,42 @@
+{% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-wrapper d-flex justify-content-center" style="margin-top: 10rem; margin-bottom: 5rem;">
+    <div class="auth-card fade-in-up" style="background-color: #212529; border: 1px solid #343a40; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 500px; box-shadow: 0 1rem 3rem rgba(0,0,0,.5);">
+        
+        <div class="text-center mb-4">
+            <h2 class="auth-title mt-3 text-white fw-bold">Редагувати відео</h2>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-4">
+                <label for="{{ form.title.id_for_label }}" class="form-label auth-label text-light mb-2">
+                    Заголовок відео
+                </label>
+                {{ form.title }}
+            </div>
+
+            <div class="mb-4">
+                <label for="{{ form.video_url.id_for_label }}" class="form-label auth-label text-light mb-2">
+                    Посилання на відео
+                </label>
+                {{ form.video_url }}
+            </div>
+
+            <div class="d-flex gap-3 mt-4">
+                <a href="{% url 'thrill_frame_app:video_page' %}" class="btn w-50 py-3 fw-bold" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    Скасувати
+                </a>
+                <!-- Повернено клас btn-auth-submit для градієнта -->
+                <button type="submit" class="btn btn-auth-submit w-50 py-3 fw-bold">
+                    Зберегти зміни
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

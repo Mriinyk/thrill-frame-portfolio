@@ -715,3 +715,30 @@ textarea.custom-auth-input {
     color: #ff3b30 !important;
     transition: color 0.2s ease;
 }
+
+/* Стилі для полів введення форм у темній темі */
+.auth-input, 
+input[type="text"], 
+input[type="url"], 
+input[type="password"], 
+input[type="email"], 
+textarea {
+    background-color: #2b3035 !important;
+    border: 1px solid #495057 !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 0.8rem 1rem !important;
+    width: 100% !important;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.auth-input:focus, 
+input[type="text"]:focus, 
+input[type="url"]:focus, 
+input[type="password"]:focus, 
+input[type="email"]:focus, 
+textarea:focus {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25) !important;
+    outline: none;
+}

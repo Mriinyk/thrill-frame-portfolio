@@ -1,5 +1,6 @@
 import requests
 from django.conf import settings
+from django.urls import reverse, reverse_lazy
 from django.shortcuts import render, get_object_or_404
 from .models import NewRelease, VideoSlide
 from django.shortcuts import render, redirect
@@ -14,6 +15,8 @@ from .forms import ContactForm
 from .forms import VideoWorkForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.generic.edit import UpdateView, DeleteView
+from django.contrib.auth.mixins import UserPassesTestMixin
 
 
 def index(request):
@@ -213,3 +216,23 @@ def add_comment(request, video_id):
                 'parent_id': parent_id
             })
     return JsonResponse({'error': 'Invalid text'}, status=400)
+
+
+class AdminRequiredMixin(UserPassesTestMixin):
+    def test_func(self):
+        return self.request.user.is_superuser
+
+
+class VideoUpdateView(AdminRequiredMixin, UpdateView):
+    model = VideoWork
+    fields = ['title', 'video_url']
+    template_name = 'thrill_frame_app/video_form.html'
+    
+    def get_success_url(self):
+        return f"{reverse('thrill_frame_app:video_page')}#video-{self.object.id}"
+
+
+class VideoDeleteView(AdminRequiredMixin, DeleteView):
+    model = VideoWork
+    template_name = 'thrill_frame_app/video_confirm_delete.html'
+    success_url = reverse_lazy('thrill_frame_app:video_page')
