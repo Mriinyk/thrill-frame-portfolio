@@ -17,7 +17,6 @@
         </div>
     {% endif %}
 
-    <!-- Відповіді -->
     <div class="replies-list ms-3 mt-2 border-start border-secondary ps-2" id="replies-{{ comment.id }}">
         {% for reply in comment.replies.all %}
             {% include "thrill_frame_app/includes/comment_item.html" with comment=reply %}

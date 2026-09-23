@@ -2,20 +2,16 @@
 {% load static %}
 
 {% block content %}
-<!-- Підключення окремих стилів -->
 <link rel="stylesheet" href="{% static 'thrill_frame_app/css/style.css' %}">
 
-<!-- Кнопка додавання фотосесії для суперюзера -->
 {% if user.is_superuser %}
     <a href="{% url 'thrill_frame_app:photo_create' %}" class="add-video-btn" title="Додати нову фотосесію">
         <i class="bi bi-plus-lg"></i>
     </a>
 {% endif %}
 
-<!-- Контейнер з відступом від навбару -->
 <div class="container videos-page-wrapper">
-    
-    <!-- ПОЛЕ ПОШУКУ -->
+
     <div class="row justify-content-center mb-5 mt-4">
         <div class="col-12 col-md-8 col-lg-6">
             <form method="GET" action="" style="position: relative;">
@@ -35,7 +31,6 @@
                 <div class="col-12 col-md-10 col-lg-8" id="photoshoot-{{ photoshoot.id }}">
                     <div class="release-card-large position-relative">
                         
-                        <!-- 1. ЗОНА КЛІКУ ФОТОСЕСІЇ: Перегляд галереї/слайдера -->
                         <div class="photo-thumbnail-container cursor-pointer photoshoot-slider-trigger" 
                              data-photoshoot-id="{{ photoshoot.id }}"
                                 data-images="{{ photoshoot.gallery_images_json }}">
@@ -51,7 +46,6 @@
                             </div>
                         </div>
 
-                        <!-- 2. ІНФОРМАЦІЯ ТА ПАНЕЛЬ ДІЙ -->
                         <div class="mt-3 text-center">
                             <div class="release-title fw-bold text-white fs-4">{{ photoshoot.title }}</div>
                             
@@ -61,12 +55,9 @@
 
                             <br>
 
-                            <!-- Кнопки дій -->
                             <div class="card-actions d-flex w-100 align-items-center {% if request.user.is_superuser %}justify-content-between{% else %}justify-content-center{% endif %} mt-3">
-                                
-                                <!-- Соціальні кнопки: Лайк, Коментар, Поділитися -->
+
                                 <div class="social-actions video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
-                                    <!-- Лайк -->
                                     <button type="button" 
                                             class="action-btn like-btn {% if user in photoshoot.likes.all %}liked{% endif %}" 
                                             data-photo-id="{{ photoshoot.id }}"
@@ -79,7 +70,6 @@
                                         <span id="likes-count-{{ photoshoot.id }}">{{ photoshoot.total_likes }}</span>
                                     </button>
 
-                                    <!-- Коментарі -->
                                     <button type="button" 
                                             class="action-btn" 
                                             data-bs-toggle="collapse" 
@@ -89,7 +79,6 @@
                                         <span id="comments-count-{{ photoshoot.id }}">{{ photoshoot.comments.count }}</span>
                                     </button>
 
-                                    <!-- Поділитися -->
                                     <button type="button" 
                                             class="action-btn" 
                                             data-bs-toggle="modal" 
@@ -99,7 +88,6 @@
                                     </button>
                                 </div>
 
-                                <!-- Адмін-кнопки: Оновити, Видалити -->
                                 {% if request.user.is_superuser %}
                                 <div class="admin-actions d-flex gap-2">
                                     <a href="{% url 'thrill_frame_app:photo_update' photoshoot.id %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
@@ -114,7 +102,6 @@
                             </div>
                         </div>
 
-                        <!-- РОЗГОРТАЙМИЙ БЛОК КОМЕНТАРІВ -->
                         <div class="collapse mt-3 text-start" id="commentsBlock-{{ photoshoot.id }}">
                             <div class="comments-section p-3 rounded-4">
                                 {% if user.is_authenticated %}
@@ -131,7 +118,6 @@
                                     <p class="text-white small text-center mb-2">Увійдіть на сайт, щоб залишати коментарі.</p>
                                 {% endif %}
 
-                                <!-- Список коментарів -->
                                 <div id="comments-list-{{ photoshoot.id }}" class="d-flex flex-column gap-2 mt-3">
                                     {% for comment in photoshoot.comments.all %}
                                         {% if not comment.parent %}
@@ -143,7 +129,6 @@
                         </div>
                     </div>
 
-                    <!-- МОДАЛЬНЕ ВІКНО «ПОДІЛИТИСЯ» -->
                     <div class="modal fade" id="shareModal-{{ photoshoot.id }}" tabindex="-1" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content auth-card p-4">
@@ -183,7 +168,6 @@
         </div>
     </div>
 
-    <!-- ПАГІНАЦІЯ -->
     {% if is_paginated %}
     <div class="row justify-content-center mt-5 mb-5">
         <nav aria-label="Page navigation">
@@ -224,7 +208,6 @@
 
 </div>
 
-<!-- МОДАЛЬНЕ ВІКНО ФОТО-СЛАЙДЕРА -->
 <div id="photoSliderModal" class="slider-modal">
     <button type="button" class="close-slider" aria-label="Закрити слайдер"></button>
     <div class="slider-counter"><span id="sliderCurrent">1</span> / <span id="sliderTotal">1</span></div>
@@ -239,6 +222,5 @@
     </div>
 </div>
 
-<!-- Підключення скрипта для фотослайдера -->
 <script src="{% static 'thrill_frame_app/js/photo-slider.js' %}"></script>
 {% endblock %}

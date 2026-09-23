@@ -13,8 +13,7 @@
         </button>
 
         <div class="collapse navbar-collapse w-100" id="thrillNav">
-            
-            <!-- Ліва частина меню (Користувач/Логін) -->
+
             <ul class="navbar-nav me-auto align-items-center text-center pt-3 pt-lg-0 mt-2 mt-lg-0">
                 <li class="nav-item">
                     {% if not user.is_authenticated %}
@@ -37,7 +36,6 @@
                 </li>
             </ul>
 
-            <!-- Права частина меню (Навігація) -->
             <ul class="navbar-nav align-items-center gap-lg-2 text-center mt-3 mt-lg-0">
                 <li class="nav-item">
                     <a class="nav-link nav-link-custom" href="{% url 'thrill_frame_app:home' %}">Головна</a>
