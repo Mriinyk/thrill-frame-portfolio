@@ -11,9 +11,10 @@ env/
 # Django
 *.log
 local_settings.py
-db.sqlite3
-db.sqlite3-journal
 media/
+
+# Draw.io diagrams
+thrill_frame_web_portfolio_servis/thrill_frame_app/database_schema.drawio
 
 # IDE та редактори
 .vscode/
