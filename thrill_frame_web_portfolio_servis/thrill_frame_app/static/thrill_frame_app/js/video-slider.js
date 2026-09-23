@@ -280,3 +280,121 @@ function copyShareLink(videoId) {
         .then(() => alert('Посилання скопійовано!'))
         .catch(err => console.error('Не вдалося скопіювати:', err));
 }
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Необхідно створити API Key в Google Cloud Console для доступу до Google Drive API
+    const GOOGLE_API_KEY = 'YOUR_GOOGLE_DRIVE_API_KEY'; 
+    
+    const modal = document.getElementById('photoSliderModal');
+    const closeBtn = document.querySelector('.close-slider');
+    const mainImage = document.getElementById('sliderMainImage');
+    const counter = document.getElementById('sliderCounter');
+    const prevBtn = document.getElementById('sliderPrev');
+    const nextBtn = document.getElementById('sliderNext');
+    
+    let currentPhotos = [];
+    let currentIndex = 0;
+
+    document.querySelectorAll('.photo-thumbnail-container').forEach(container => {
+        container.addEventListener('click', async function() {
+            const folderId = this.dataset.folderId;
+            const coverUrl = this.dataset.coverUrl;
+            
+            // Встановлюємо обкладинку першою
+            currentPhotos = [coverUrl];
+            currentIndex = 0;
+            updateSlider();
+            modal.style.display = 'block';
+
+            if (folderId && GOOGLE_API_KEY !== 'YOUR_GOOGLE_DRIVE_API_KEY') {
+                try {
+                    const response = await fetch(`https://www.googleapis.com/drive/v3/files?q='${folderId}'+in+parents+and+mimeType+contains+'image/'&key=${GOOGLE_API_KEY}&fields=files(id)`);
+                    const data = await response.json();
+                    if (data.files) {
+                        const fetchedPhotos = data.files.map(file => `https://drive.google.com/uc?id=${file.id}`);
+                        // Додаємо фото до масиву, виключаючи дублікат обкладинки, якщо він там є
+                        currentPhotos = [coverUrl, ...fetchedPhotos];
+                        updateSlider();
+                    }
+                } catch (error) {
+                    console.error('Помилка завантаження фото з Google Drive:', error);
+                }
+            }
+        });
+    });
+
+    closeBtn.addEventListener('click', () => modal.style.display = 'none');
+    
+    prevBtn.addEventListener('click', () => {
+        if (currentIndex > 0) {
+            currentIndex--;
+            updateSlider();
+        }
+    });
+
+    nextBtn.addEventListener('click', () => {
+        if (currentIndex < currentPhotos.length - 1) {
+            currentIndex++;
+            updateSlider();
+        }
+    });
+
+    function updateSlider() {
+        mainImage.src = currentPhotos[currentIndex];
+        counter.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
+        
+        prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
+        nextBtn.style.visibility = currentIndex === currentPhotos.length - 1 ? 'hidden' : 'visible';
+    }
+
+    // Лайки
+    document.querySelectorAll('.like-btn').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const photoId = this.dataset.id;
+            fetch(`/photos/${photoId}/like/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': getCookie('csrftoken')
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                this.querySelector('.likes-count').textContent = data.likes_count;
+                const icon = this.querySelector('i');
+                if (data.liked) {
+                    icon.classList.remove('bi-heart');
+                    icon.classList.add('bi-heart-fill');
+                } else {
+                    icon.classList.remove('bi-heart-fill');
+                    icon.classList.add('bi-heart');
+                }
+            });
+        });
+    });
+
+    // Share
+    document.querySelectorAll('.share-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+            const url = this.dataset.url;
+            navigator.clipboard.writeText(url).then(() => {
+                alert('Посилання скопійовано!');
+            });
+        });
+    });
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+});

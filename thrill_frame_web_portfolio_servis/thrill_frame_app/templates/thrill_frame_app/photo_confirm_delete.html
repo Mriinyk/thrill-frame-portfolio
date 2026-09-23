@@ -1,0 +1,31 @@
+{% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="auth-wrapper d-flex justify-content-center" style="margin-top: 10rem; margin-bottom: 5rem;">
+    <div class="auth-card fade-in-up text-white" style="background-color: #212529; border: 1px solid #343a40; border-radius: 16px; padding: 2.5rem; width: 100%; max-width: 500px; box-shadow: 0 1rem 3rem rgba(0,0,0,.5);">
+
+        <div class="text-center mb-4">
+            <h3 class="mb-3 fw-bold" style="background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; color: transparent;">
+                <i class="fas fa-exclamation-triangle" style="-webkit-text-fill-color: initial; color: #ff3b30;"></i> Видалити фотосесію?
+            </h3>
+            <p class="text-light mb-2">Ви впевнені, що хочете назавжди видалити фотосесію <br><strong>"{{ photo.title }}"</strong>?</p>
+            <p class="text-muted small">Цю дію неможливо скасувати.</p>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <div class="d-flex gap-3 mt-4">
+                <a href="{% url 'thrill_frame_app:photos_list' %}" class="btn w-50 py-3 fw-bold" style="background: transparent; border: 1px solid rgba(255, 255, 255, 0.15); color: #ffffff; border-radius: 12px; display: flex; align-items: center; justify-content: center; text-decoration: none;">
+                    Скасувати
+                </a>
+                <button type="submit" class="btn btn-auth-submit w-50 py-3 fw-bold">
+                    Так, видалити
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
+{% endblock %}

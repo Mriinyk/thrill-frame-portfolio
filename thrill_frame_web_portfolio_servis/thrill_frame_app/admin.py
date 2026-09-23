@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
-from .models import NewRelease, VideoSlide, ContactRequest, VideoComment
+from .models import NewRelease, VideoSlide, ContactRequest, VideoComment, PhotoComment
 
 @admin.register(VideoSlide)
 class VideoSlideAdmin(admin.ModelAdmin):
@@ -38,6 +38,14 @@ class VideoCommentAdmin(admin.ModelAdmin):
     list_filter = ('created_at',)
     search_fields = ('text', 'user__username')
     raw_id_fields = ('user', 'video', 'parent')
+
+
+@admin.register(PhotoComment)
+class PhotoCommentAdmin(admin.ModelAdmin):
+    list_display = ('user', 'photo_session', 'text', 'created_at')
+    list_filter = ('created_at',)
+    search_fields = ('text', 'user__username', 'photo_session__title')
+    raw_id_fields = ('user', 'photo_session')
 
 
 User = get_user_model()

@@ -1,0 +1,244 @@
+{% extends 'thrill_frame_app/base.html' %}
+{% load static %}
+
+{% block content %}
+<!-- Підключення окремих стилів -->
+<link rel="stylesheet" href="{% static 'thrill_frame_app/css/style.css' %}">
+
+<!-- Кнопка додавання фотосесії для суперюзера -->
+{% if user.is_superuser %}
+    <a href="{% url 'thrill_frame_app:photo_create' %}" class="add-video-btn" title="Додати нову фотосесію">
+        <i class="bi bi-plus-lg"></i>
+    </a>
+{% endif %}
+
+<!-- Контейнер з відступом від навбару -->
+<div class="container videos-page-wrapper">
+    
+    <!-- ПОЛЕ ПОШУКУ -->
+    <div class="row justify-content-center mb-5 mt-4">
+        <div class="col-12 col-md-8 col-lg-6">
+            <form method="GET" action="" style="position: relative;">
+                <input type="text" name="q" value="{{ search_query }}" placeholder="Пошук фотосесій..." 
+                    class="form-control text-white shadow-none search-input" 
+                    style="background-color: #212529; border: 1px solid #343a40; border-radius: 50px; padding: 15px 25px; padding-right: 55px;">
+                <button type="submit" class="search-btn" title="Шукати">
+                    <i class="bi bi-search"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <div class="video-grid-container">
+        <div class="row g-4 justify-content-center">
+            {% for photoshoot in photoshoots %}
+                <div class="col-12 col-md-10 col-lg-8" id="photoshoot-{{ photoshoot.id }}">
+                    <div class="release-card-large position-relative">
+                        
+                        <!-- 1. ЗОНА КЛІКУ ФОТОСЕСІЇ: Перегляд галереї/слайдера -->
+                        <div class="photo-thumbnail-container cursor-pointer photoshoot-slider-trigger" 
+                             data-photoshoot-id="{{ photoshoot.id }}"
+                                data-images="{{ photoshoot.gallery_images_json }}">
+                            
+                            {% if photoshoot.cover_image %}
+                                <img src="{{ photoshoot.cover_image }}" alt="{{ photoshoot.title }}" class="card-thumbnail photo-cover w-100 rounded-3" loading="lazy">
+                            {% else %}
+                                <div class="card-thumbnail-placeholder"></div>
+                            {% endif %}
+                            
+                            <div class="play-overlay">
+                                <i class="bi bi-images"></i>
+                            </div>
+                        </div>
+
+                        <!-- 2. ІНФОРМАЦІЯ ТА ПАНЕЛЬ ДІЙ -->
+                        <div class="mt-3 text-center">
+                            <div class="release-title fw-bold text-white fs-4">{{ photoshoot.title }}</div>
+                            
+                            {% if photoshoot.description %}
+                                <p class="text-white-50 mt-2 mb-0 px-3 fs-6">{{ photoshoot.description }}</p>
+                            {% endif %}
+
+                            <br>
+
+                            <!-- Кнопки дій -->
+                            <div class="card-actions d-flex w-100 align-items-center {% if request.user.is_superuser %}justify-content-between{% else %}justify-content-center{% endif %} mt-3">
+                                
+                                <!-- Соціальні кнопки: Лайк, Коментар, Поділитися -->
+                                <div class="social-actions video-actions d-flex justify-content-center align-items-center gap-4 mt-1">
+                                    <!-- Лайк -->
+                                    <button type="button" 
+                                            class="action-btn like-btn {% if user in photoshoot.likes.all %}liked{% endif %}" 
+                                            data-photo-id="{{ photoshoot.id }}"
+                                            {% if user.is_authenticated %}
+                                                onclick="togglePhotoLike(event, {{ photoshoot.id }})"
+                                            {% else %}
+                                                disabled title="Авторизуйтесь, щоб поставити лайк"
+                                            {% endif %}>
+                                        <i class="bi bi-heart-fill icon-like"></i>
+                                        <span id="likes-count-{{ photoshoot.id }}">{{ photoshoot.total_likes }}</span>
+                                    </button>
+
+                                    <!-- Коментарі -->
+                                    <button type="button" 
+                                            class="action-btn" 
+                                            data-bs-toggle="collapse" 
+                                            data-bs-target="#commentsBlock-{{ photoshoot.id }}" 
+                                            aria-expanded="false">
+                                        <i class="bi bi-chat-left-text-fill"></i>
+                                        <span id="comments-count-{{ photoshoot.id }}">{{ photoshoot.comments.count }}</span>
+                                    </button>
+
+                                    <!-- Поділитися -->
+                                    <button type="button" 
+                                            class="action-btn" 
+                                            data-bs-toggle="modal" 
+                                            data-bs-target="#shareModal-{{ photoshoot.id }}">
+                                        <i class="bi bi-share-fill"></i>
+                                        <span>Поділитися</span>
+                                    </button>
+                                </div>
+
+                                <!-- Адмін-кнопки: Оновити, Видалити -->
+                                {% if request.user.is_superuser %}
+                                <div class="admin-actions d-flex gap-2">
+                                    <a href="{% url 'thrill_frame_app:photo_update' photoshoot.id %}" class="btn btn-sm btn-outline-warning rounded-pill px-3">
+                                        <i class="fas fa-edit"></i> Оновити
+                                    </a>
+                                    <a href="{% url 'thrill_frame_app:photo_delete' photoshoot.id %}" class="btn btn-sm btn-outline-danger rounded-pill px-3">
+                                        <i class="fas fa-trash"></i> Видалити
+                                    </a>
+                                </div>
+                                {% endif %}
+                                
+                            </div>
+                        </div>
+
+                        <!-- РОЗГОРТАЙМИЙ БЛОК КОМЕНТАРІВ -->
+                        <div class="collapse mt-3 text-start" id="commentsBlock-{{ photoshoot.id }}">
+                            <div class="comments-section p-3 rounded-4">
+                                {% if user.is_authenticated %}
+                                    <div class="comment-input-wrapper mb-3">
+                                        <span class="user-gradient-name d-block mb-1" style="font-size: 0.95rem;">{{ user.username }}</span>
+                                        <div class="position-relative">
+                                            <textarea id="comment-text-{{ photoshoot.id }}" class="form-control custom-auth-input pe-5" rows="2" placeholder="Залишіть свій коментар..."></textarea>
+                                            <button type="button" class="btn btn-auth-submit btn-sm position-absolute bottom-0 end-0 m-2 px-3" onclick="submitPhotoComment({{ photoshoot.id }})">
+                                                Опублікувати
+                                            </button>
+                                        </div>
+                                    </div>
+                                {% else %}
+                                    <p class="text-white small text-center mb-2">Увійдіть на сайт, щоб залишати коментарі.</p>
+                                {% endif %}
+
+                                <!-- Список коментарів -->
+                                <div id="comments-list-{{ photoshoot.id }}" class="d-flex flex-column gap-2 mt-3">
+                                    {% for comment in photoshoot.comments.all %}
+                                        {% if not comment.parent %}
+                                            {% include "thrill_frame_app/includes/comment_item.html" with comment=comment %}
+                                        {% endif %}
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- МОДАЛЬНЕ ВІКНО «ПОДІЛИТИСЯ» -->
+                    <div class="modal fade" id="shareModal-{{ photoshoot.id }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content auth-card p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-3">
+                                    <h5 class="modal-title text-white fw-bold fs-5">Поділитися фотосесією</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                
+                                <div class="d-flex justify-content-around my-3 fs-2">
+                                    <a href="https://t.me/share/url?url={{ request.build_absolute_uri }}%23photoshoot-{{ photoshoot.id }}" target="_blank" class="text-white hover-red" title="Telegram">
+                                        <i class="bi bi-telegram"></i>
+                                    </a>
+                                    <a href="viber://forward?text={{ request.build_absolute_uri }}%23photoshoot-{{ photoshoot.id }}" target="_blank" class="text-white hover-red" title="Viber">
+                                        <i class="bi bi-chat-left-dots-fill"></i>
+                                    </a>
+                                    <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}%23photoshoot-{{ photoshoot.id }}" target="_blank" class="text-white hover-red" title="Facebook">
+                                        <i class="bi bi-facebook"></i>
+                                    </a>
+                                    <a href="https://api.whatsapp.com/send?text={{ request.build_absolute_uri }}%23photoshoot-{{ photoshoot.id }}" target="_blank" class="text-white hover-red" title="WhatsApp">
+                                        <i class="bi bi-whatsapp"></i>
+                                    </a>
+                                </div>
+
+                                <div class="mt-2 text-center">
+                                    <input type="text" class="form-control custom-auth-input mb-3" id="shareLink-{{ photoshoot.id }}" value="{{ request.build_absolute_uri }}#photoshoot-{{ photoshoot.id }}" readonly>
+                                    <button type="button" class="btn btn-auth-submit px-4" onclick="copyShareLink({{ photoshoot.id }})">Копіювати</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12 text-center text-muted py-5">
+                    <p class="fs-5">Фотосесій поки немає.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- ПАГІНАЦІЯ -->
+    {% if is_paginated %}
+    <div class="row justify-content-center mt-5 mb-5">
+        <nav aria-label="Page navigation">
+            <ul class="pagination custom-pagination justify-content-center m-0">
+                
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link shadow-sm" href="?page={{ page_obj.previous_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                        <li class="page-item active" aria-current="page">
+                            <span class="page-link fw-bold shadow">{{ num }}</span>
+                        </li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                        <li class="page-item">
+                            <a class="page-link shadow-sm" href="?page={{ num }}{% if search_query %}&q={{ search_query }}{% endif %}">{{ num }}</a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link shadow-sm" href="?page={{ page_obj.next_page_number }}{% if search_query %}&q={{ search_query }}{% endif %}" aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+</div>
+
+<!-- МОДАЛЬНЕ ВІКНО ФОТО-СЛАЙДЕРА -->
+<div id="photoSliderModal" class="slider-modal">
+    <button type="button" class="close-slider" aria-label="Закрити слайдер"></button>
+    <div class="slider-counter"><span id="sliderCurrent">1</span> / <span id="sliderTotal">1</span></div>
+    <div class="slider-content">
+        <button type="button" class="slider-nav-btn" id="sliderPrev">
+            <i class="bi bi-chevron-left"></i>
+        </button>
+        <img id="sliderMainImage" src="" alt="Фото галереї">
+        <button type="button" class="slider-nav-btn" id="sliderNext">
+            <i class="bi bi-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+<!-- Підключення скрипта для фотослайдера -->
+<script src="{% static 'thrill_frame_app/js/photo-slider.js' %}"></script>
+{% endblock %}

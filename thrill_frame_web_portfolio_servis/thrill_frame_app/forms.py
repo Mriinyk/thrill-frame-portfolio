@@ -1,5 +1,5 @@
 from django import forms
-from .models import ContactRequest, VideoWork
+from .models import ContactRequest, VideoWork, PhotoSession, PhotoComment
 
 
 class UserAuthForm(forms.Form):
@@ -62,4 +62,32 @@ class VideoWorkForm(forms.ModelForm):
                 'class': 'form-control custom-auth-input', 
                 'placeholder': '[https://www.youtube.com/watch?v=](https://www.youtube.com/watch?v=)...'
             }),
+        }
+
+
+class PhotoSessionForm(forms.ModelForm):
+    class Meta:
+        model = PhotoSession
+        fields = ['title', 'cover_url', 'drive_folder_url']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control custom-auth-input',
+                'placeholder': 'Напр.: Lose Yourself'
+            }),
+            'cover_url': forms.URLInput(attrs={
+                'class': 'form-control custom-auth-input',
+                'placeholder': 'Напр.: https://images.unsplash.com/...' 
+            }),
+            'drive_folder_url': forms.URLInput(attrs={
+                'class': 'form-control custom-auth-input',
+                'placeholder': 'Напр.: https://drive.google.com/drive/folders/...' 
+            }),
+        }
+
+class PhotoCommentForm(forms.ModelForm):
+    class Meta:
+        model = PhotoComment
+        fields = ['text']
+        widgets = {
+            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Додати коментар...'}),
         }

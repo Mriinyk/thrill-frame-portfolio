@@ -787,6 +787,26 @@ textarea:focus {
     transition: background-color 5000s ease-in-out 0s;
 }
 
+.custom-auth-input:-webkit-autofill,
+.custom-auth-input:-webkit-autofill:hover,
+.custom-auth-input:-webkit-autofill:focus,
+.custom-auth-input:-webkit-autofill:active,
+input[type="url"]:-webkit-autofill,
+input[type="text"]:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 1000px #2b3035 inset !important;
+    -webkit-text-fill-color: #ffffff !important;
+    caret-color: #ffffff !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.custom-auth-input:-moz-autofill,
+input[type="url"]:-moz-autofill,
+input[type="text"]:-moz-autofill {
+    background-color: #2b3035 !important;
+    color: #ffffff !important;
+    caret-color: #ffffff !important;
+}
+
 /* CSS стилі кнопок Оновити та Видалити */
 .card-actions {
     display: flex;
@@ -818,34 +838,245 @@ textarea:focus {
 /* Стилі пагінації */
 .custom-pagination .page-item {
         margin: 0 4px;
+}
+.custom-pagination .page-link {
+    background-color: #212529;
+    border: 1px solid #343a40;
+    color: #fff;
+    border-radius: 50% !important;
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.custom-pagination .page-link:hover {
+    background-color: #2c3034;
+    border-color: #ff3b30;
+    color: #ff3b30;
+    box-shadow: 0 0 10px rgba(255, 59, 48, 0.2);
+}
+
+.custom-pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
+    border: none;
+    color: #fff;
+    box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
+    pointer-events: none;
+}
+
+.custom-pagination .page-link:focus {
+    box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.25);
+    outline: none;
+}
+
+/* Photo Slider Modal */
+.slider-modal {
+    display: none;
+    position: fixed;
+    z-index: 1050;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.95);
+    touch-action: manipulation;
+}
+
+.slider-content {
+    position: relative;
+    width: 80%;
+    height: 85%;
+    margin: 5% auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#sliderMainImage {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    border-radius: 10px;
+    box-shadow: 0 0 30px rgba(0,0,0,0.65);
+}
+
+.slider-counter {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    z-index: 3;
+    color: #ff3b30;
+    font-size: 1.2rem;
+    font-weight: bold;
+    background: transparent;
+    border: 2px solid transparent;
+    padding: 7px 16px;
+    border-radius: 50px;
+    text-shadow: 0 0 12px rgba(255, 59, 48, 0.45);
+    transition: all 0.3s ease;
+}
+
+.slider-counter:hover,
+.slider-counter:focus-visible {
+    border-color: #ff3b30;
+    background-color: rgba(255, 59, 48, 0.1);
+    box-shadow: 0 0 8px #ff3b30, 0 0 20px rgba(255, 59, 48, 0.6);
+    outline: none;
+}
+
+.close-slider {
+    position: absolute;
+    top: 15px;
+    left: 30px;
+    z-index: 4;
+    color: #f1f1f1;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: 2px solid transparent;
+    border-radius: 50%;
+    font-size: 0;
+    cursor: pointer;
+    padding: 0;
+    transform-origin: center center;
+    transition: all 0.3s ease;
+}
+
+.close-slider::before {
+    content: "\00D7";
+    display: grid;
+    width: 100%;
+    height: 100%;
+    place-items: center;
+    color: currentColor;
+    font: 300 32px/1 Arial, sans-serif;
+}
+
+.close-slider:hover,
+.close-slider:focus-visible {
+    color: #fff;
+    border-color: #ff3b30;
+    background-color: rgba(255, 59, 48, 0.1);
+    box-shadow: 0 0 8px #ff3b30, 0 0 20px rgba(255, 59, 48, 0.6);
+    transform: scale(1.1);
+    outline: none;
+}
+
+.slider-nav-btn {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 3;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    color: #ff3b30;
+    border: 2px solid transparent;
+    font-size: 1.6rem;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.slider-nav-btn:hover,
+.slider-nav-btn:focus-visible {
+    color: #fff;
+    background-color: rgba(255, 59, 48, 0.1);
+    border-color: #ff3b30;
+    transform: translateY(-50%) scale(1.1);
+    box-shadow: 0 0 8px #ff3b30, 0 0 20px rgba(255, 59, 48, 0.6);
+    outline: none;
+}
+
+#sliderPrev { left: -60px; }
+#sliderNext { right: -60px; }
+
+.photo-thumbnail-container {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #2a2a2a;
+    cursor: pointer;
+}
+
+.photo-thumbnail-container img {
+    width: 100%;
+    height: auto;
+    max-height: 78vh;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.16s ease;
+}
+
+.photo-thumbnail-container:hover img {
+    transform: scale(1.05);
+}
+
+.photo-thumbnail-container .play-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 3rem;
+    color: #ffffff;
+    opacity: 0;
+    transition: opacity 0.16s ease, color 0.16s ease, transform 0.16s ease;
+}
+
+.photo-thumbnail-container:hover .play-overlay {
+    opacity: 1;
+    color: #ff3b30;
+    transform: scale(1.1);
+}
+
+.photo-cover {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+@media (max-width: 576px) {
+    .slider-content {
+        width: 100%;
+        height: 78%;
+        margin: 12% auto 0;
     }
-    .custom-pagination .page-link {
-        background-color: #212529;
-        border: 1px solid #343a40;
-        color: #fff;
-        border-radius: 50% !important;
-        width: 45px;
-        height: 45px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        transition: all 0.3s ease;
-        text-decoration: none;
+
+    .slider-counter {
+        top: 16px;
+        right: 16px;
+        font-size: 0.95rem;
+        padding: 6px 12px;
     }
-    .custom-pagination .page-link:hover {
-        background-color: #2c3034;
-        border-color: #ff3b30;
-        color: #ff3b30;
-        box-shadow: 0 0 10px rgba(255, 59, 48, 0.2);
+
+    .close-slider {
+        top: 12px;
+        left: 16px;
+        width: 46px;
+        height: 46px;
+        font-size: 32px;
+        line-height: 42px;
     }
-    .custom-pagination .page-item.active .page-link {
-        background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
-        border: none;
-        color: #fff;
-        box-shadow: 0 4px 10px rgba(255, 59, 48, 0.4);
-        pointer-events: none;
+
+    .slider-nav-btn {
+        width: 46px;
+        height: 46px;
+        font-size: 1.35rem;
     }
-    .custom-pagination .page-link:focus {
-        box-shadow: 0 0 0 0.25rem rgba(255, 59, 48, 0.25);
-        outline: none;
-    }
+
+    #sliderPrev { left: 12px; }
+    #sliderNext { right: 12px; }
+}

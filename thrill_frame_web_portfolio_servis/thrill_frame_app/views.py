@@ -1,23 +1,20 @@
 import requests
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404 ,redirect
 from django.db.models import Q, F
-from .models import NewRelease, VideoSlide
-from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate, get_user_model
 from django.contrib.auth.models import User
-from django.shortcuts import render
 from django.db.models import F
-from .models import SiteVisit, VideoWork, PhotoSession, VideoComment
+from .models import SiteVisit, VideoWork, VideoComment, PhotoSession, PhotoComment, NewRelease, VideoSlide
 from django.contrib import messages
-from .forms import ContactForm
-from .forms import VideoWorkForm
+from .forms import ContactForm, VideoWorkForm, PhotoSessionForm, PhotoCommentForm
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import ListView
 from django.contrib.auth.mixins import UserPassesTestMixin
+from django.core.paginator import Paginator
 
 
 def index(request):
@@ -252,3 +249,91 @@ class VideoListView(ListView):
         context = super().get_context_data(**kwargs)
         context["search_query"] = self.request.GET.get("q", "")
         return context
+
+
+def photos_list(request):
+    query = request.GET.get('q', '')
+    if query:
+        photos = PhotoSession.objects.filter(title__icontains=query).order_by('-created_at')
+    else:
+        photos = PhotoSession.objects.all().order_by('-created_at')
+
+    paginator = Paginator(photos, 6)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, 'thrill_frame_app/photos.html', {
+        'photoshoots': page_obj.object_list,
+        'page_obj': page_obj,
+        'search_query': query,
+        'is_paginated': page_obj.has_other_pages(),
+        'comment_form': PhotoCommentForm()
+    })
+
+@login_required
+def photo_create(request):
+    if not request.user.is_superuser:
+        return redirect('thrill_frame_app:photos_list')
+    if request.method == 'POST':
+        form = PhotoSessionForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('thrill_frame_app:photos_list')
+    else:
+        form = PhotoSessionForm()
+    return render(request, 'thrill_frame_app/photo_form.html', {'form': form, 'title': 'Додати фотосесію'})
+
+@login_required
+def photo_update(request, pk):
+    if not request.user.is_superuser:
+        return redirect('thrill_frame_app:photos_list')
+    photo = get_object_or_404(PhotoSession, pk=pk)
+    if request.method == 'POST':
+        form = PhotoSessionForm(request.POST, instance=photo)
+        if form.is_valid():
+            form.save()
+            return redirect('thrill_frame_app:photos_list')
+    else:
+        form = PhotoSessionForm(instance=photo)
+    return render(request, 'thrill_frame_app/photo_form.html', {'form': form, 'title': 'Оновити фотосесію'})
+
+@login_required
+def photo_delete(request, pk):
+    if not request.user.is_superuser:
+        return redirect('thrill_frame_app:photos_list')
+    photo = get_object_or_404(PhotoSession, pk=pk)
+    if request.method == 'POST':
+        photo.delete()
+        return redirect('thrill_frame_app:photos_list')
+    return render(request, 'thrill_frame_app/photo_confirm_delete.html', {'photo': photo})
+
+@login_required
+def photo_like(request, pk):
+    photo = get_object_or_404(PhotoSession, pk=pk)
+    if photo.likes.filter(id=request.user.id).exists():
+        photo.likes.remove(request.user)
+        liked = False
+    else:
+        photo.likes.add(request.user)
+        liked = True
+    return JsonResponse({'liked': liked, 'likes_count': photo.likes.count()})
+
+@login_required
+def photo_comment(request, pk):
+    photo = get_object_or_404(PhotoSession, pk=pk)
+    if request.method == 'POST':
+        form = PhotoCommentForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.photo_session = photo
+            comment.user = request.user
+            comment.save()
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+                return JsonResponse({
+                    'status': 'success',
+                    'username': comment.user.username,
+                    'text': comment.text,
+                    'created_at': comment.created_at.strftime('%d.%m.%Y %H:%M'),
+                    'comment_count': photo.comments.count(),
+                })
+    return redirect('thrill_frame_app:photos_list')
