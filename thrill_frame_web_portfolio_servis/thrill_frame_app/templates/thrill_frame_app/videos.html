@@ -161,9 +161,9 @@
                                     </a>
                                 </div>
 
-                                <div class="input-group mt-2">
-                                    <input type="text" class="form-control custom-auth-input" id="shareLink-{{ video.id }}" value="{{ request.build_absolute_uri }}#video-{{ video.id }}" readonly>
-                                    <button type="button" class="btn btn-auth-submit px-3" onclick="copyShareLink({{ video.id }})">Копіювати</button>
+                                <div class="mt-2 text-center">
+                                    <input type="text" class="form-control custom-auth-input mb-3" id="shareLink-{{ video.id }}" value="{{ request.build_absolute_uri }}#video-{{ video.id }}" readonly>
+                                    <button type="button" class="btn btn-auth-submit px-4" onclick="copyShareLink({{ video.id }})">Копіювати</button>
                                 </div>
                             </div>
                         </div>

@@ -745,8 +745,8 @@ textarea:focus {
 
 /* Стиль для плейсхолдера в інпуті пошуку */
 .search-input::placeholder {
-    color: #a0a0a0 !important; /* Світло-сірий колір */
-    opacity: 0.8;             /* Чіткість */
+    color: #a0a0a0 !important;
+    opacity: 0.8;
 }
 
 .search-btn {
