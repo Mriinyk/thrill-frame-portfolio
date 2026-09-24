@@ -1,8 +1,9 @@
 import requests
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
+from django.utils.http import url_has_allowed_host_and_scheme
 from django.contrib import messages
-from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import UserPassesTestMixin
 from django.core.paginator import Paginator
@@ -20,7 +21,6 @@ from thrill_frame_app.forms import (
 )
 from thrill_frame_app.models import (
     NewRelease,
-    PhotoComment,
     PhotoSession,
     SiteVisit,
     VideoComment,
@@ -47,16 +47,22 @@ def index(request):
     return render(request, "thrill_frame_app/index.html", context)
 
 
-User = get_user_model()
+def get_safe_redirect_url(request):
+    next_url = request.POST.get("next") or request.GET.get("next")
+    if not next_url:
+        next_url = request.META.get("HTTP_REFERER")
+
+    if next_url and url_has_allowed_host_and_scheme(
+        next_url,
+        allowed_hosts={request.get_host()},
+        require_https=request.is_secure(),
+    ):
+        return next_url
+    return None
 
 
 def login_view(request):
-    next_url = request.POST.get("next") or request.GET.get("next")
-
-    if not next_url:
-        referer = request.META.get("HTTP_REFERER", "")
-        if referer and "login" not in referer:
-            next_url = referer
+    next_url = get_safe_redirect_url(request)
 
     if request.method == "POST":
         user_name = request.POST.get("username", "").strip()
@@ -78,21 +84,7 @@ def login_view(request):
             if next_url:
                 return redirect(next_url)
             return redirect("thrill_frame_app:home")
-        else:
-            if User.objects.filter(username=user_name).exists():
-                messages.error(request, "Користувач з таким ім'ям існує, але пароль невірний.")
-            else:
-                try:
-                    User.objects.create_user(username=user_name, password=user_pass)
-                    new_user = authenticate(request, username=user_name, password=user_pass)
-                    if new_user is not None:
-                        login(request, new_user)
-                        request.session.set_expiry(1209600)
-                        if next_url:
-                            return redirect(next_url)
-                        return redirect("thrill_frame_app:home")
-                except Exception as e:
-                    messages.error(request, f"Помилка створення: {e}")
+        messages.error(request, "Неправильне ім'я користувача або пароль.")
 
     return render(
         request,
@@ -102,12 +94,8 @@ def login_view(request):
 
 
 def logout_view(request):
-    next_url = request.GET.get("next") or request.META.get("HTTP_REFERER") or "/"
+    next_url = get_safe_redirect_url(request) or "/"
     logout(request)
-    
-    if "login" in next_url or "logout" in next_url:
-        return redirect("thrill_frame_app:home")
-
     return redirect(next_url)
 
 
@@ -177,7 +165,7 @@ def contact_view(request):
 def add_video(request):
     if not request.user.is_superuser:
         return redirect("thrill_frame_app:video_page")
-        
+
     if request.method == "POST":
         form = VideoWorkForm(request.POST)
         if form.is_valid():
@@ -185,7 +173,7 @@ def add_video(request):
             return redirect("thrill_frame_app:video_page")
     else:
         form = VideoWorkForm()
-        
+
     return render(request, "thrill_frame_app/add_video.html", {"form": form})
 
 
@@ -211,7 +199,12 @@ def add_comment(request, video_id):
         parent_id = request.POST.get("parent_id")
 
         if text:
-            parent_comment = VideoComment.objects.get(id=parent_id) if parent_id else None
+            parent_comment = None
+            if parent_id:
+                parent_comment = VideoComment.objects.filter(
+                    id=parent_id,
+                    video=video,
+                ).first()
             comment = VideoComment.objects.create(
                 video=video,
                 user=request.user,
@@ -274,7 +267,9 @@ class VideoListView(ListView):
 def photos_list(request):
     query = request.GET.get("q", "")
     if query:
-        photos = PhotoSession.objects.filter(title__icontains=query).order_by("-created_at")
+        photos = PhotoSession.objects.filter(
+            title__icontains=query
+        ).order_by("-created_at")
     else:
         photos = PhotoSession.objects.all().order_by("-created_at")
 
@@ -294,6 +289,7 @@ def photos_list(request):
         },
     )
 
+
 @login_required
 def photo_create(request):
     if not request.user.is_superuser:
@@ -310,6 +306,7 @@ def photo_create(request):
         "thrill_frame_app/photo_form.html",
         {"form": form, "title": "Додати фотосесію"},
     )
+
 
 @login_required
 def photo_update(request, pk):
@@ -329,6 +326,7 @@ def photo_update(request, pk):
         {"form": form, "title": "Оновити фотосесію"},
     )
 
+
 @login_required
 def photo_delete(request, pk):
     if not request.user.is_superuser:
@@ -343,6 +341,7 @@ def photo_delete(request, pk):
         {"photo": photo},
     )
 
+
 @login_required
 def photo_like(request, pk):
     photo = get_object_or_404(PhotoSession, pk=pk)
@@ -353,6 +352,7 @@ def photo_like(request, pk):
         photo.likes.add(request.user)
         liked = True
     return JsonResponse({"liked": liked, "likes_count": photo.likes.count()})
+
 
 @login_required
 def photo_comment(request, pk):

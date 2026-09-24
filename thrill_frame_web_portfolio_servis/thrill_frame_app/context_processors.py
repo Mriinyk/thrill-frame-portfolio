@@ -1,5 +1,6 @@
 from thrill_frame_app.models import PhotoSession, SiteVisit, VideoWork
 
+
 def footer_stats(request):
     visit = SiteVisit.objects.filter(id=1).first()
 

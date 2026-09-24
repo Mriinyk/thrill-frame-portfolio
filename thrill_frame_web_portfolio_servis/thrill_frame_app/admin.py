@@ -10,6 +10,7 @@ from thrill_frame_app.models import (
     VideoSlide,
 )
 
+
 @admin.register(VideoSlide)
 class VideoSlideAdmin(admin.ModelAdmin):
     list_display = ("order", "title", "youtube_id", "is_active")
@@ -30,7 +31,13 @@ class NewReleaseAdmin(admin.ModelAdmin):
 
 @admin.register(ContactRequest)
 class ContactRequestAdmin(admin.ModelAdmin):
-    list_display = ("id", "contact_method", "social_username", "created_at", "telegram_message_id")
+    list_display = (
+        "id",
+        "contact_method",
+        "social_username",
+        "created_at",
+        "telegram_message_id",
+    )
     list_filter = ("contact_method", "created_at")
     search_fields = ("social_username", "message")
     readonly_fields = ("created_at", "telegram_message_id")
@@ -38,6 +45,7 @@ class ContactRequestAdmin(admin.ModelAdmin):
     def delete_queryset(self, request, queryset):
         for obj in queryset:
             obj.delete()
+
 
 @admin.register(VideoComment)
 class VideoCommentAdmin(admin.ModelAdmin):
@@ -62,6 +70,7 @@ try:
     admin.site.unregister(User)
 except admin.sites.NotRegistered:
     pass
+
 
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):

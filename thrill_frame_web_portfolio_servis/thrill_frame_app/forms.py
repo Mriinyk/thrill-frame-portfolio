@@ -1,6 +1,11 @@
 from django import forms
 
-from thrill_frame_app.models import ContactRequest, PhotoComment, PhotoSession, VideoWork
+from thrill_frame_app.models import (
+    ContactRequest,
+    PhotoComment,
+    PhotoSession,
+    VideoWork,
+)
 
 
 class UserAuthForm(forms.Form):
@@ -84,6 +89,7 @@ class PhotoSessionForm(forms.ModelForm):
                 "placeholder": "Напр.: https://drive.google.com/drive/folders/...",
             }),
         }
+
 
 class PhotoCommentForm(forms.ModelForm):
     class Meta:

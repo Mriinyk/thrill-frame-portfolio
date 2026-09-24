@@ -23,25 +23,25 @@ def validate_youtube_input(value):
     )
     if not re.fullmatch(id_pattern, value) and not re.search(url_pattern, value):
         raise ValidationError(
-            "Введіть коректний 11-значний YouTube ID або посилання на відео."
+            "Enter a valid 11-character YouTube ID or video URL."
         )
 
 
 class VideoSlide(models.Model):
-    title = models.CharField("Назва (для адмінки)", max_length=150)
+    title = models.CharField("Title (for admin)", max_length=150)
     youtube_id = models.CharField(
-        "YouTube Video ID або Посилання",
+        "YouTube video ID or URL",
         max_length=255,
         validators=[validate_youtube_input],
-        help_text="Підтримуються посилання youtube.com, youtu.be або чистий ID",
+        help_text="Supports youtube.com, youtu.be, or a plain ID",
     )
-    overlay_text = models.CharField("Текст оверлею (знизу зліва)", max_length=255)
-    order = models.PositiveIntegerField("Порядок відображення", default=0)
-    is_active = models.BooleanField("Активний", default=True)
+    overlay_text = models.CharField("Overlay text (bottom left)", max_length=255)
+    order = models.PositiveIntegerField("Display order", default=0)
+    is_active = models.BooleanField("Active", default=True)
 
     class Meta:
-        verbose_name = "Відео слайд"
-        verbose_name_plural = "Відео слайди"
+        verbose_name = "video slide"
+        verbose_name_plural = "video slides"
         ordering = ["order"]
 
     def __str__(self):
@@ -65,25 +65,25 @@ class SiteVisit(models.Model):
     count = models.PositiveIntegerField(default=0)
 
     def __str__(self):
-        return f"Відвідувань: {self.count}"
+        return f"Visits: {self.count}"
 
 
 class VideoWork(models.Model):
-    title = models.CharField(max_length=255, verbose_name="Назва")
-    video_url = models.URLField(verbose_name="Посилання на відео")
+    title = models.CharField(max_length=255, verbose_name="Title")
+    video_url = models.URLField(verbose_name="Video URL")
     likes = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         related_name="liked_videos",
         blank=True,
-        verbose_name="Вподобання",
+        verbose_name="Likes",
     )
     created_at = models.DateTimeField(
-        auto_now_add=True, verbose_name="Дата створення"
+        auto_now_add=True, verbose_name="Created at"
     )
 
     class Meta:
-        verbose_name = "Відеоробота"
-        verbose_name_plural = "Відеороботи"
+        verbose_name = "video work"
+        verbose_name_plural = "video works"
         ordering = ["-created_at", "-id"]
 
     @property
@@ -111,12 +111,12 @@ class VideoComment(models.Model):
         VideoWork,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Відео",
+        verbose_name="Video",
     )
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name="Автор",
+        verbose_name="Author",
     )
     parent = models.ForeignKey(
         "self",
@@ -124,14 +124,14 @@ class VideoComment(models.Model):
         blank=True,
         on_delete=models.CASCADE,
         related_name="replies",
-        verbose_name="Батьківський коментар",
+        verbose_name="Parent comment",
     )
-    text = models.TextField(verbose_name="Текст коментаря")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+    text = models.TextField(verbose_name="Comment text")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     class Meta:
-        verbose_name = "Відео - коментар"
-        verbose_name_plural = "Відео - коментарі"
+        verbose_name = "video comment"
+        verbose_name_plural = "video comments"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -139,13 +139,13 @@ class VideoComment(models.Model):
 
 
 class PhotoSession(models.Model):
-    title = models.CharField(max_length=255, verbose_name="Назва")
+    title = models.CharField(max_length=255, verbose_name="Title")
     cover_url = models.URLField(
-        verbose_name="Посилання на обкладинку",
+        verbose_name="Cover URL",
         blank=True,
         null=True
     )
-    drive_folder_url = models.URLField(verbose_name="Посилання на папку Google Drive")
+    drive_folder_url = models.URLField(verbose_name="Google Drive folder URL")
     created_at = models.DateTimeField(auto_now_add=True, null=True)
     likes = models.ManyToManyField(User, related_name="liked_photos", blank=True)
 
@@ -267,20 +267,23 @@ class PhotoSession(models.Model):
             match = re.search(r"id=([a-zA-Z0-9_-]+)", self.drive_folder_url)
         return match.group(1) if match else None
 
+
 class PhotoComment(models.Model):
     photo_session = models.ForeignKey(
         PhotoSession,
         on_delete=models.CASCADE,
         related_name="comments",
-        verbose_name="Фото сесія",
+        verbose_name="Photo session",
     )
-    user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Автор")
-    text = models.TextField(verbose_name="Коментар")
-    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата створення")
+    user = models.ForeignKey(
+        User, on_delete=models.CASCADE, verbose_name="Author"
+    )
+    text = models.TextField(verbose_name="Comment")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Created at")
 
     class Meta:
-        verbose_name = "Фото - коментар"
-        verbose_name_plural = "Фото - коментарі"
+        verbose_name = "photo comment"
+        verbose_name_plural = "photo comments"
         ordering = ["-created_at"]
 
     def __str__(self):
@@ -288,20 +291,20 @@ class PhotoComment(models.Model):
 
 
 class NewRelease(models.Model):
-    title = models.CharField("Заголовок", max_length=255)
-    category = models.CharField("Категорія", max_length=100)
-    video_url = models.URLField("Посилання на YouTube")
-    is_active = models.BooleanField("Активно", default=True)
+    title = models.CharField("Title", max_length=255)
+    category = models.CharField("Category", max_length=100)
+    video_url = models.URLField("YouTube URL")
+    is_active = models.BooleanField("Active", default=True)
     order = models.PositiveIntegerField(
-        "Порядок сортування",
+        "Sort order",
         default=0,
-        help_text="Менше число = вище у списку (0, 1, 2...)",
+        help_text="Lower numbers appear first (0, 1, 2...)",
     )
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Новинка"
-        verbose_name_plural = "Новинки"
+        verbose_name = "new release"
+        verbose_name_plural = "new releases"
         ordering = ["order", "-created_at"]
 
     def __str__(self):
@@ -312,7 +315,10 @@ class NewRelease(models.Model):
         if not self.video_url:
             return ""
         url = self.video_url.strip()
-        pattern = r"(?:v=|\/embed\/|\/shorts\/|\/v\/|youtu\.be\/|\/live\/)([a-zA-Z0-9_-]{11})"
+        pattern = (
+            r"(?:v=|\/embed\/|\/shorts\/|\/v\/|youtu\.be\/|\/live\/)"
+            r"([a-zA-Z0-9_-]{11})"
+        )
         match = re.search(pattern, url)
         if match:
             return match.group(1)
@@ -336,30 +342,30 @@ class ContactRequest(models.Model):
     telegram_message_id = models.BigIntegerField(
         blank=True,
         null=True,
-        verbose_name="ID повідомлення в Telegram",
+        verbose_name="Telegram message ID",
     )
 
     contact_method = models.CharField(
         max_length=10,
         choices=CONTACT_CHOICES,
         default="telegram",
-        verbose_name="Спосіб зв'язку",
+        verbose_name="Contact method",
     )
     social_username = models.CharField(
         max_length=100,
-        verbose_name="Нікнейм",
+        verbose_name="Social username",
     )
     message = models.TextField(
-        verbose_name="Повідомлення",
+        verbose_name="Message",
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
-        verbose_name="Дата створення",
+        verbose_name="Created at",
     )
 
     class Meta:
-        verbose_name = "Заявка"
-        verbose_name_plural = "Заявки"
+        verbose_name = "contact request"
+        verbose_name_plural = "contact requests"
         ordering = ["-created_at"]
 
     def __str__(self):

@@ -4,7 +4,9 @@ __pycache__/
 venv/
 .env
 db.sqlite3
-staticfiles/# Python
+staticfiles/
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
@@ -22,7 +24,7 @@ media/
 # Draw.io diagrams
 thrill_frame_web_portfolio_servis/thrill_frame_app/database_schema.drawio
 
-# IDE та редактори
+# IDE and editors
 .vscode/
 .pycharm/
 .idea/
