@@ -1,5 +1,6 @@
 from django import forms
-from .models import ContactRequest, VideoWork, PhotoSession, PhotoComment
+
+from thrill_frame_app.models import ContactRequest, PhotoComment, PhotoSession, VideoWork
 
 
 class UserAuthForm(forms.Form):
@@ -7,19 +8,19 @@ class UserAuthForm(forms.Form):
         max_length=150,
         label="Створіть, або введіть існуюче ім'я користувача",
         widget=forms.TextInput(attrs={
-            'class': 'form-control custom-auth-input',
-            'placeholder': 'Ім\'я користувача',
-            'autocomplete': 'username',
-            'required': True
+            "class": "form-control custom-auth-input",
+            "placeholder": "Ім'я користувача",
+            "autocomplete": "username",
+            "required": True,
         })
     )
     password = forms.CharField(
         label="Впишіть пароль",
         widget=forms.PasswordInput(attrs={
-            'class': 'form-control custom-auth-input',
-            'placeholder': 'Пароль',
-            'autocomplete': 'current-password',
-            'required': True
+            "class": "form-control custom-auth-input",
+            "placeholder": "Пароль",
+            "autocomplete": "current-password",
+            "required": True,
         })
     )
 
@@ -27,40 +28,40 @@ class UserAuthForm(forms.Form):
 class ContactForm(forms.ModelForm):
     class Meta:
         model = ContactRequest
-        fields = ['contact_method', 'social_username', 'message']
+        fields = ["contact_method", "social_username", "message"]
         widgets = {
-            'contact_method': forms.RadioSelect(attrs={'class': 'custom-radio-input'}),
-            'social_username': forms.TextInput(attrs={
-                'class': 'form-control custom-auth-input',
-                'placeholder': '@nickname',
-                'required': True
+            "contact_method": forms.RadioSelect(attrs={"class": "custom-radio-input"}),
+            "social_username": forms.TextInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "@nickname",
+                "required": True,
             }),
-            'message': forms.Textarea(attrs={
-                'class': 'form-control custom-auth-input',
-                'placeholder': 'Ваше повідомлення...',
-                'rows': 4,
-                'required': True
+            "message": forms.Textarea(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Ваше повідомлення...",
+                "rows": 4,
+                "required": True,
             })
         }
         labels = {
-            'contact_method': "Оберіть соціальну мережу для зв'язку",
-            'social_username': "Введіть нікнейм",
-            'message': "Напишіть повідомлення"
+            "contact_method": "Оберіть соціальну мережу для зв'язку",
+            "social_username": "Введіть нікнейм",
+            "message": "Напишіть повідомлення",
         }
 
 
 class VideoWorkForm(forms.ModelForm):
     class Meta:
         model = VideoWork
-        fields = ['title', 'video_url']
+        fields = ["title", "video_url"]
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control custom-auth-input', 
-                'placeholder': 'Введіть заголовок відео'
+            "title": forms.TextInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Введіть заголовок відео",
             }),
-            'video_url': forms.URLInput(attrs={
-                'class': 'form-control custom-auth-input', 
-                'placeholder': '[https://www.youtube.com/watch?v=](https://www.youtube.com/watch?v=)...'
+            "video_url": forms.URLInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "https://www.youtube.com/watch?v=...",
             }),
         }
 
@@ -68,26 +69,32 @@ class VideoWorkForm(forms.ModelForm):
 class PhotoSessionForm(forms.ModelForm):
     class Meta:
         model = PhotoSession
-        fields = ['title', 'cover_url', 'drive_folder_url']
+        fields = ["title", "cover_url", "drive_folder_url"]
         widgets = {
-            'title': forms.TextInput(attrs={
-                'class': 'form-control custom-auth-input',
-                'placeholder': 'Напр.: Lose Yourself'
+            "title": forms.TextInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Напр.: Lose Yourself",
             }),
-            'cover_url': forms.URLInput(attrs={
-                'class': 'form-control custom-auth-input',
-                'placeholder': 'Напр.: https://images.unsplash.com/...' 
+            "cover_url": forms.URLInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Напр.: https://images.unsplash.com...",
             }),
-            'drive_folder_url': forms.URLInput(attrs={
-                'class': 'form-control custom-auth-input',
-                'placeholder': 'Напр.: https://drive.google.com/drive/folders/...' 
+            "drive_folder_url": forms.URLInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Напр.: https://drive.google.com/drive/folders/...",
             }),
         }
 
 class PhotoCommentForm(forms.ModelForm):
     class Meta:
         model = PhotoComment
-        fields = ['text']
+        fields = ["text"]
         widgets = {
-            'text': forms.Textarea(attrs={'class': 'form-control', 'rows': 2, 'placeholder': 'Додати коментар...'}),
+            "text": forms.Textarea(
+                attrs={
+                    "class": "form-control",
+                    "rows": 2,
+                    "placeholder": "Додати коментар...",
+                }
+            ),
         }

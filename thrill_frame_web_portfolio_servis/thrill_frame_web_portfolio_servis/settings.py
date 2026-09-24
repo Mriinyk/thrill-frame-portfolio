@@ -10,9 +10,10 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
+import os
 from pathlib import Path
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# Build paths inside the project like this: BASE_DIR / "subdir".
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
@@ -27,7 +28,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
-SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+SECURE_REFERRER_POLICY = "strict-origin-when-cross-origin"
 
 # Application definition
 
@@ -38,7 +39,7 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
-    'thrill_frame_app',
+    "thrill_frame_app",
 ]
 
 MIDDLEWARE = [
@@ -63,7 +64,7 @@ TEMPLATES = [
                 "django.template.context_processors.request",
                 "django.contrib.auth.context_processors.auth",
                 "django.contrib.messages.context_processors.messages",
-                'thrill_frame_app.context_processors.footer_stats',
+                "thrill_frame_app.context_processors.footer_stats",
             ],
         },
     },
@@ -113,6 +114,8 @@ USE_I18N = True
 
 USE_TZ = True
 
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
@@ -129,14 +132,14 @@ MAILERS = {
     },
 }
 
-AUTH_USER_MODEL = 'thrill_frame_app.User'
+AUTH_USER_MODEL = "thrill_frame_app.User"
 
-LOGIN_URL = 'thrill_frame_app:login'
+LOGIN_URL = "thrill_frame_app:login"
 
-LOGIN_REDIRECT_URL = 'thrill_frame_app:index'
+LOGIN_REDIRECT_URL = "thrill_frame_app:home"
 
-LOGOUT_REDIRECT_URL = 'thrill_frame_app:login'
+LOGOUT_REDIRECT_URL = "thrill_frame_app:login"
 
-TELEGRAM_BOT_TOKEN = '8878616904:AAGCrj25pqf0H8i-Gd_XYVNaPleLXVb6oXY'
+TELEGRAM_BOT_TOKEN = os.environ.get("TELEGRAM_BOT_TOKEN", "")
 
-TELEGRAM_CHAT_ID = '610002325'
+TELEGRAM_CHAT_ID = os.environ.get("TELEGRAM_CHAT_ID", "")

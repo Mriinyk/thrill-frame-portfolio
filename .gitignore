@@ -1,4 +1,10 @@
-# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+db.sqlite3
+staticfiles/# Python
 __pycache__/
 *.py[cod]
 *$py.class
