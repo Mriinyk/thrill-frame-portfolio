@@ -4,10 +4,6 @@ let totalSlides = 0;
 let slideElements = [];
 let sliderInterval = null;
 
-// ==========================================
-// 1. ГОЛОВНИЙ СЛАЙДЕР YOUTUBE (HERO SLIDER)
-// ==========================================
-
 function extractYouTubeID(urlOrId) {
     if (!urlOrId) return '';
     const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
@@ -61,7 +57,7 @@ function initYouTubePlayers() {
 
 function startSlider() {
     if (totalSlides > 1 && !sliderInterval) {
-        sliderInterval = setInterval(nextSlide, 30000); // 30 секунд
+        sliderInterval = setInterval(nextSlide, 30000);
     }
 }
 
@@ -81,7 +77,6 @@ function nextSlide() {
     }
 }
 
-// Ініціалізація YouTube API
 window.onYouTubeIframeAPIReady = initYouTubePlayers;
 
 if (window.YT && window.YT.Player) {
@@ -93,13 +88,7 @@ if (window.YT && window.YT.Player) {
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 }
 
-// ==========================================
-// 2. ОБРОБКА ПОДІЙ DOM (МОДАЛКИ, ФОРМИ)
-// ==========================================
-
 document.addEventListener('DOMContentLoaded', function () {
-    
-    // --- 2.1 Об’єднане модальне вікно відтворення відео ---
     const videoModalElement = document.getElementById('videoModal');
     const youtubePlayer = document.getElementById('youtubePlayer');
     const videoModalTitle = document.getElementById('videoModalTitle');
@@ -107,10 +96,9 @@ document.addEventListener('DOMContentLoaded', function () {
     if (videoModalElement && youtubePlayer) {
         const bsModal = new bootstrap.Modal(videoModalElement);
 
-        // Слухаємо кліки ТІЛЬКИ на елементи з класом .video-play-trigger або .release-card
         document.querySelectorAll('.video-play-trigger, .release-card').forEach(card => {
             card.addEventListener('click', function (e) {
-                e.stopPropagation(); // Забігаємо наперед від випадкових спливань
+                e.stopPropagation();
                 const videoId = this.getAttribute('data-video-id');
                 const videoTitle = this.getAttribute('data-video-title') || '';
 
@@ -124,13 +112,11 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
 
-        // Очищення плеєра при закритті вікна
         videoModalElement.addEventListener('hidden.bs.modal', function () {
             youtubePlayer.src = '';
         });
     }
 
-    // --- 2.2 Динамічна зміна лейбла форми контакту ---
     const radioButtons = document.querySelectorAll('input[name="contact_method"]');
     const dynamicLabel = document.getElementById("dynamic_username_label");
 
@@ -147,11 +133,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
-// ==========================================
-// 3. АЯКС ТА ДОПОМІЖНІ ФУНКЦІЇ
-// ==========================================
-
-// Отримання CSRF Token
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -167,9 +148,8 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// Система лайків
 function toggleLike(event, videoId) {
-    if (event) event.stopPropagation(); // Зупиняємо спливання кліку
+    if (event) event.stopPropagation();
 
     const btn = event.currentTarget;
 
@@ -196,23 +176,16 @@ function toggleLike(event, videoId) {
     .catch(err => console.error('Помилка при відправці лайка:', err));
 }
 
-// Перемикач поля відповіді на коментар
-function toggleReplyInput(commentId) {
-    const form = document.getElementById(`reply-form-${commentId}`);
-    if (form) form.classList.toggle('d-none');
-}
-
-// Надсилання коментарів
 function toggleReplyInput(commentId) {
     const form = document.getElementById(`reply-form-${commentId}`);
     if (form) form.classList.toggle('d-none');
 }
 
 function submitComment(videoId, parentId = null) {
-    const textInput = parentId 
-        ? document.getElementById(`reply-text-${parentId}`) 
+    const textInput = parentId
+        ? document.getElementById(`reply-text-${parentId}`)
         : document.getElementById(`comment-text-${videoId}`);
-    
+
     if (!textInput) return;
 
     const text = textInput.value.trim();
@@ -234,7 +207,7 @@ function submitComment(videoId, parentId = null) {
     .then(data => {
         if (data.status === 'success') {
             textInput.value = '';
-            
+
             const commentHtml = `
                 <div class="single-comment p-2 rounded-3 mt-2" style="background: rgba(255, 255, 255, 0.03);">
                     <div class="d-flex justify-content-between align-items-center">
@@ -248,7 +221,7 @@ function submitComment(videoId, parentId = null) {
             if (parentId) {
                 const repliesContainer = document.getElementById(`replies-${parentId}`);
                 if (repliesContainer) repliesContainer.insertAdjacentHTML('beforeend', commentHtml);
-                
+
                 const replyForm = document.getElementById(`reply-form-${parentId}`);
                 if (replyForm) replyForm.classList.add('d-none');
             } else {
@@ -270,7 +243,6 @@ function submitComment(videoId, parentId = null) {
     .catch(err => console.error('Помилка надсилання коментаря:', err));
 }
 
-// Копіювання посилання
 function copyShareLink(videoId) {
     const linkInput = document.getElementById(`shareLink-${videoId}`);
     if (!linkInput) return;
@@ -282,16 +254,15 @@ function copyShareLink(videoId) {
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Необхідно створити API Key в Google Cloud Console для доступу до Google Drive API
-    const GOOGLE_API_KEY = 'YOUR_GOOGLE_DRIVE_API_KEY'; 
-    
+    const GOOGLE_API_KEY = 'YOUR_GOOGLE_DRIVE_API_KEY';
+
     const modal = document.getElementById('photoSliderModal');
     const closeBtn = document.querySelector('.close-slider');
     const mainImage = document.getElementById('sliderMainImage');
     const counter = document.getElementById('sliderCounter');
     const prevBtn = document.getElementById('sliderPrev');
     const nextBtn = document.getElementById('sliderNext');
-    
+
     let currentPhotos = [];
     let currentIndex = 0;
 
@@ -299,8 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
         container.addEventListener('click', async function() {
             const folderId = this.dataset.folderId;
             const coverUrl = this.dataset.coverUrl;
-            
-            // Встановлюємо обкладинку першою
+
             currentPhotos = [coverUrl];
             currentIndex = 0;
             updateSlider();
@@ -312,7 +282,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     const data = await response.json();
                     if (data.files) {
                         const fetchedPhotos = data.files.map(file => `https://drive.google.com/uc?id=${file.id}`);
-                        // Додаємо фото до масиву, виключаючи дублікат обкладинки, якщо він там є
                         currentPhotos = [coverUrl, ...fetchedPhotos];
                         updateSlider();
                     }
@@ -324,7 +293,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     closeBtn.addEventListener('click', () => modal.style.display = 'none');
-    
+
     prevBtn.addEventListener('click', () => {
         if (currentIndex > 0) {
             currentIndex--;
@@ -342,12 +311,11 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateSlider() {
         mainImage.src = currentPhotos[currentIndex];
         counter.textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
-        
+
         prevBtn.style.visibility = currentIndex === 0 ? 'hidden' : 'visible';
         nextBtn.style.visibility = currentIndex === currentPhotos.length - 1 ? 'hidden' : 'visible';
     }
 
-    // Лайки
     document.querySelectorAll('.like-btn').forEach(btn => {
         btn.addEventListener('click', function(e) {
             e.preventDefault();
@@ -373,7 +341,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Share
     document.querySelectorAll('.share-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             const url = this.dataset.url;

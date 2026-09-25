@@ -3,12 +3,12 @@ body {
     color: #ffffff;
 }
 
-/* Плавний перехід позиціонування логотипу */
+/* Smooth logo positioning transition */
 .transition-all {
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Плаваючий навбар */
+/* Floating navbar */
 .custom-floating-nav {
     background: rgba(18, 20, 24, 0.70);
     backdrop-filter: blur(20px);
@@ -24,7 +24,7 @@ body {
         border-radius: 24px !important;
     }
 
-    /* Ширина заглушки */
+    /* Spacer width */
     .nav-spacer {
         width: 38px;
         height: 38px;
@@ -32,7 +32,7 @@ body {
     }
 }
 
-/* Сяйво та стиль логотипу */
+/* Logo glow and styling */
 .nav-logo {
     border: 2px solid rgba(255, 255, 255, 0.15);
     transition: all 0.3s ease;
@@ -44,7 +44,7 @@ body {
     box-shadow: 0 0 15px rgba(255, 59, 48, 0.5);
 }
 
-/* Посилання меню */
+/* Menu links */
 .nav-link-custom {
     color: rgba(255, 255, 255, 0.7) !important;
     font-size: 0.95rem;
@@ -57,7 +57,7 @@ body {
     color: #ffffff !important;
 }
 
-/* Кнопка CTA */
+/* CTA button */
 .btn-cta-glow {
     background: linear-gradient(135deg, #ff3b30 0%, #b80d0d 100%);
     color: #ffffff !important;
@@ -77,7 +77,7 @@ body {
     color: #ffffff;
 }
 
-/* Стилізація острівного футера */
+/* Floating footer styling */
 .custom-floating-footer {
     background: rgba(18, 20, 24, 0.88);
     backdrop-filter: blur(20px);
@@ -105,7 +105,7 @@ body {
     line-height: 1.25;
 }
 
-/* Шрифт і колір тексту футера */
+/* Footer text font and color */
 .footer-text {
     color: rgba(255, 255, 255, 0.7);
     font-family: 'Inter', sans-serif;
@@ -150,14 +150,14 @@ body {
     text-align: center;
 }
 
-/* Стилі слайдеру */
+/* Slider styles */
 .hero-slider-wrapper {
     margin: 5rem auto 0 auto;
     position: relative;
     width: 100%;
     aspect-ratio: 16 / 9;
     max-height: 70vh;
-    max-width: calc(70vh * (16 / 9)); /* Гранична ширина за пропорцією 16:9 */
+    max-width: calc(70vh * (16 / 9)); /* Maximum width based on the 16:9 ratio */
     border-radius: 24px;
     overflow: hidden;
     background-color: #121418;
@@ -178,7 +178,7 @@ body {
     visibility: visible;
 }
 
-/* Контейнер для відео */
+/* Video container */
 .video-embed {
     position: absolute;
     top: 0;
@@ -188,7 +188,7 @@ body {
     pointer-events: none;
 }
 
-/* Тег <iframe> та контейнери YouTube API */
+/* <iframe> element and YouTube API containers */
 .video-embed iframe,
 .video-embed div[id^="player"] {
     position: absolute;
@@ -202,7 +202,7 @@ body {
     filter: brightness(0.65);
 }
 
-/* Оверлей з текстом (Glassmorphism) */
+/* Text overlay (glassmorphism) */
 .slide-overlay-bottom {
     position: absolute;
     bottom: 30px;
@@ -246,7 +246,7 @@ body {
     }
 }
 
-/* Блок про нас у скляній рамці */
+/* About section with a glass frame */
 .about-section {
     background: transparent;
     width: 100%;
@@ -292,7 +292,7 @@ body {
     }
 }
 
-/* Анімація появи при завантаженні */
+/* Entrance animation on page load */
 .fade-in-up {
     animation: fadeInUp 1.2s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -308,9 +308,12 @@ body {
     }
 }
 
-/* Авторизація та Реєстрація */
+/* Authentication and registration */
 .auth-wrapper {
     width: 100%;
+    align-items: flex-start !important;
+    padding-top: 130px !important;
+    padding-bottom: 3rem !important;
 }
 
 .auth-card {
@@ -395,6 +398,38 @@ body {
     font-size: 0.9rem;
 }
 
+.auth-switch-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    color: #e0e0e0;
+}
+
+.auth-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(255, 59, 48, 0.45);
+    border-radius: 50px;
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff6b63;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.auth-link:hover,
+.auth-link:focus-visible {
+    border-color: #ff3b30;
+    background: linear-gradient(135deg, #ff3b30 0%, #a80000 100%);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.35);
+    transform: translateY(-1px);
+}
+
 .nav-link-btn {
     background: transparent;
     border: 1px solid rgba(255, 255, 255, 0.15);
@@ -446,7 +481,7 @@ body {
     transform: translateX(2px);
 }
 
-/* Блок Новинки */
+/* New releases section */
 .section-title {
     font-weight: 800;
     font-size: clamp(2rem, 3.5vw, 2.5rem);
@@ -535,7 +570,7 @@ body {
     color: #e0e0e0 !important;
 }
 
-/* Модальне вікно відео на 80% ширини екрана */
+/* Video modal at 80% of the viewport width */
 .custom-video-modal .modal-dialog {
     max-width: 80vw;
     width: 80vw;
@@ -548,7 +583,7 @@ body {
     }
 }
 
-/* Стилі іконок мереж */
+/* Social network icon styles */
 .about-social-icon {
     display: flex;
     align-items: center;
@@ -578,7 +613,7 @@ body {
     transform: translateY(-3px);
 }
 
-/* Радіо-кнопки вибору соцмережі */
+/* Social network selection radio buttons */
 .custom-radio-wrapper input[type="radio"] {
     display: none;
 }
@@ -611,15 +646,15 @@ textarea.custom-auth-input {
     resize: none;
 }
 
-/* Сторінка відео */
+/* Video page */
 
-/* Відступ контейнера від навбару */
+/* Container spacing below the navbar */
 .videos-page-wrapper {
     margin-top: 9rem;
     margin-bottom: 5rem;
 }
 
-/* Кнопка додавання відео для суперюзера (виправлена підсвітка строго від центру) */
+/* Superuser add-video button with centered glow */
 .add-video-btn {
     position: fixed;
     right: 30px;
@@ -647,9 +682,9 @@ textarea.custom-auth-input {
     color: #ffffff;
 }
 
-/* Великі картки відео по центру */
+/* Large centered video cards */
 .video-grid-container {
-    max-width: 1000px; /* Обмежуємо ширину для великого центрування */
+    max-width: 1000px; /* Limit width for centered layout */
     margin: 0 auto;
 }
 
@@ -669,7 +704,7 @@ textarea.custom-auth-input {
     background: rgba(255, 255, 255, 0.05);
 }
 
-/* Модальне вікно (стилі з новинок) */
+/* Modal window (shared with the new releases section) */
 .custom-video-modal .modal-dialog {
     max-width: 80vw;
     width: 80vw;
@@ -682,7 +717,7 @@ textarea.custom-auth-input {
     }
 }
 
-/* Кнопки дій (лайк, коментарі, поширення) */
+/* Action buttons (like, comments, and sharing) */
 .action-btn {
     background: transparent;
     border: none;
@@ -699,12 +734,12 @@ textarea.custom-auth-input {
     color: #ff3b30;
 }
 
-/* Червоне сяйво для активованого лайку */
+/* Red glow for an active like */
 .action-btn.liked svg {
     filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.8));
 }
 
-/* Блок коментарів у темному скляному стилі сайту */
+/* Comments section in the site's dark glass style */
 .comments-section {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.06);
@@ -716,7 +751,7 @@ textarea.custom-auth-input {
     transition: color 0.2s ease;
 }
 
-/* Стилі для полів введення форм у темній темі */
+/* Form input styles for the dark theme */
 .auth-input, 
 input[type="text"], 
 input[type="url"], 
@@ -743,7 +778,7 @@ textarea:focus {
     outline: none;
 }
 
-/* Стиль для плейсхолдера в інпуті пошуку */
+/* Search input placeholder style */
 .search-input::placeholder {
     color: #a0a0a0 !important;
     opacity: 0.8;
@@ -764,20 +799,20 @@ textarea:focus {
     outline: none;
 }
 
-/* Ефект при наведенні (Hover) */
+/* Hover effect */
 .search-btn:hover {
     color: #ff6259;
     transform: translateY(-50%) scale(1.18);
     filter: drop-shadow(0 0 8px rgba(255, 59, 48, 0.6));
 }
 
-/* Ефект при натисканні (Active) */
+/* Active press effect */
 .search-btn:active {
     transform: translateY(-50%) scale(0.92);
     filter: drop-shadow(0 0 3px rgba(255, 59, 48, 0.4));
 }
 
-/* Перевизначення стилів автозаповнення браузера для поля пошуку */
+/* Override browser autofill styles for the search field */
 .search-input:-webkit-autofill,
 .search-input:-webkit-autofill:hover, 
 .search-input:-webkit-autofill:focus, 
@@ -807,7 +842,7 @@ input[type="text"]:-moz-autofill {
     caret-color: #ffffff !important;
 }
 
-/* CSS стилі кнопок Оновити та Видалити */
+/* CSS styles for the Update and Delete buttons */
 .card-actions {
     display: flex;
     justify-content: space-between;
@@ -818,15 +853,15 @@ input[type="text"]:-moz-autofill {
 .social-actions, .admin-actions {
     display: flex;
     align-items: center;
-    gap: 12px; /* Відстань між кнопками */
+    gap: 12px; /* Space between buttons */
 }
 
-/* Медіа-запит для адаптивності на мобільних пристроях */
+/* Responsive media query for mobile devices */
 @media (max-width: 576px) {
     .card-actions {
         flex-direction: column;
         align-items: center;
-        gap: 15px; /* Відстань між верхнім та нижнім рядом */
+        gap: 15px; /* Space between the upper and lower rows */
     }
 
     .admin-actions {
@@ -835,7 +870,7 @@ input[type="text"]:-moz-autofill {
     }
 }
 
-/* Стилі пагінації */
+/* Pagination styles */
 .custom-pagination .page-item {
         margin: 0 4px;
 }

@@ -1,0 +1,4 @@
+Django==5.2.13
+python-decouple==3.8
+requests==2.27.1
+flake8==7.3.0
