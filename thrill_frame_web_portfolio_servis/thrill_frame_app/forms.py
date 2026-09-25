@@ -1,9 +1,11 @@
 from django import forms
+from django.contrib.auth.forms import UserCreationForm
 
 from thrill_frame_app.models import (
     ContactRequest,
     PhotoComment,
     PhotoSession,
+    User,
     VideoWork,
 )
 
@@ -28,6 +30,43 @@ class UserAuthForm(forms.Form):
             "required": True,
         })
     )
+
+
+class SignUpForm(UserCreationForm):
+    password1 = forms.CharField(
+        label="Пароль",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control custom-auth-input",
+            "placeholder": "Пароль",
+            "autocomplete": "new-password",
+        }),
+        strip=False,
+    )
+    password2 = forms.CharField(
+        label="Підтвердіть пароль",
+        widget=forms.PasswordInput(attrs={
+            "class": "form-control custom-auth-input",
+            "placeholder": "Підтвердіть пароль",
+            "autocomplete": "new-password",
+        }),
+        strip=False,
+    )
+
+    class Meta:
+        model = User
+        fields = ("username", "password1", "password2")
+        labels = {
+            "username": "Ім'я користувача",
+            "password1": "Пароль",
+            "password2": "Підтвердіть пароль",
+        }
+        widgets = {
+            "username": forms.TextInput(attrs={
+                "class": "form-control custom-auth-input",
+                "placeholder": "Ім'я користувача",
+                "autocomplete": "username",
+            }),
+        }
 
 
 class ContactForm(forms.ModelForm):

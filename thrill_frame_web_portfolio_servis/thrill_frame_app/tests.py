@@ -126,6 +126,34 @@ class InteractionViewTests(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertFalse(User.objects.filter(username="new-user").exists())
 
+    def test_user_can_register_and_is_logged_in(self):
+        response = self.client.post(
+            reverse("thrill_frame_app:signup"),
+            {
+                "username": "new-user",
+                "password1": "A-strong-password-123",
+                "password2": "A-strong-password-123",
+            },
+        )
+
+        self.assertRedirects(response, reverse("thrill_frame_app:home"))
+        self.assertTrue(User.objects.filter(username="new-user").exists())
+        self.assertTrue(response.wsgi_request.user.is_authenticated)
+
+    def test_signup_preserves_safe_next_url(self):
+        video_page_url = reverse("thrill_frame_app:video_page")
+        response = self.client.post(
+            f"{reverse('thrill_frame_app:signup')}?next={video_page_url}",
+            {
+                "username": "another-user",
+                "password1": "A-strong-password-123",
+                "password2": "A-strong-password-123",
+                "next": video_page_url,
+            },
+        )
+
+        self.assertRedirects(response, video_page_url)
+
     def test_login_rejects_external_redirect(self):
         response = self.client.post(
             reverse("thrill_frame_app:login"),

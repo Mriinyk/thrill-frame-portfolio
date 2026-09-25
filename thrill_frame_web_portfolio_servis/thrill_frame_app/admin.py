@@ -65,6 +65,9 @@ class PhotoCommentAdmin(admin.ModelAdmin):
 
 User = get_user_model()
 
+User._meta.verbose_name = "User"
+User._meta.verbose_name_plural = "Users"
+
 # Re-register the user model with the custom admin display.
 try:
     admin.site.unregister(User)

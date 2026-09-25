@@ -311,6 +311,9 @@ body {
 /* Authentication and registration */
 .auth-wrapper {
     width: 100%;
+    align-items: flex-start !important;
+    padding-top: 130px !important;
+    padding-bottom: 3rem !important;
 }
 
 .auth-card {
@@ -393,6 +396,38 @@ body {
     color: #ff6b63;
     border-radius: 12px;
     font-size: 0.9rem;
+}
+
+.auth-switch-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 0.35rem;
+    color: #e0e0e0;
+}
+
+.auth-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.35rem 0.9rem;
+    border: 1px solid rgba(255, 59, 48, 0.45);
+    border-radius: 50px;
+    background: rgba(255, 59, 48, 0.1);
+    color: #ff6b63;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.auth-link:hover,
+.auth-link:focus-visible {
+    border-color: #ff3b30;
+    background: linear-gradient(135deg, #ff3b30 0%, #a80000 100%);
+    color: #ffffff;
+    box-shadow: 0 0 15px rgba(255, 59, 48, 0.35);
+    transform: translateY(-1px);
 }
 
 .nav-link-btn {

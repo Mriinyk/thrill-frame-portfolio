@@ -1,7 +1,12 @@
 from django.urls import path
 
 from thrill_frame_app import views
-from thrill_frame_app.views import VideoDeleteView, VideoListView, VideoUpdateView
+from thrill_frame_app.views import (
+    SignUpView,
+    VideoDeleteView,
+    VideoListView,
+    VideoUpdateView,
+)
 
 app_name = "thrill_frame_app"
 
@@ -9,6 +14,7 @@ urlpatterns = [
     path("", views.index, name="home"),
     path("contact/", views.contact_view, name="contact"),
     path("login/", views.login_view, name="login"),
+    path("signup/", SignUpView.as_view(), name="signup"),
     path("logout/", views.logout_view, name="logout"),
     path("videos/", VideoListView.as_view(), name="video_page"),
     path("video/add/", views.add_video, name="add_video"),

@@ -11,13 +11,14 @@ from django.db.models import F, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
-from django.views.generic.edit import UpdateView, DeleteView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic import ListView
 
 from thrill_frame_app.forms import (
     ContactForm,
     PhotoCommentForm,
     PhotoSessionForm,
+    SignUpForm,
     VideoWorkForm,
 )
 from thrill_frame_app.models import (
@@ -92,6 +93,25 @@ def login_view(request):
         "thrill_frame_app/registration/login.html",
         {"next": next_url},
     )
+
+
+class SignUpView(CreateView):
+    form_class = SignUpForm
+    template_name = "thrill_frame_app/registration/signup.html"
+    success_url = reverse_lazy("thrill_frame_app:home")
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["next"] = get_safe_redirect_url(self.request)
+        return context
+
+    def form_valid(self, form):
+        response = super().form_valid(form)
+        login(self.request, self.object)
+        next_url = get_safe_redirect_url(self.request)
+        if next_url:
+            response["Location"] = next_url
+        return response
 
 
 def logout_view(request):

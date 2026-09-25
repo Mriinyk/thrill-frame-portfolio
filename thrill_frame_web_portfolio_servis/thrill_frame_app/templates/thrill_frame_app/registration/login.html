@@ -24,7 +24,7 @@
 
             <div class="mb-4">
                 <label for="id_username" class="form-label auth-label">
-                    Створіть, або введіть існуюче ім'я користувача
+                    Введіть ім'я користувача
                 </label>
                 <input type="text" name="username" id="id_username" class="form-control custom-auth-input" placeholder="Ім'я користувача" required autocomplete="username">
             </div>
@@ -37,9 +37,16 @@
             </div>
 
             <button type="submit" class="btn btn-auth-submit w-100 py-3 mt-2 fw-bold">
-                Увійти / Зареєструватися
+                Увійти
             </button>
         </form>
+
+        <p class="text-center mt-4 mb-0 auth-switch-text">
+            Ще не маєте акаунта?
+            <a href="{% url 'thrill_frame_app:signup' %}{% if next %}?next={{ next|urlencode }}{% endif %}" class="auth-link">
+                Зареєструватися
+            </a>
+        </p>
 
     </div>
 </div>
