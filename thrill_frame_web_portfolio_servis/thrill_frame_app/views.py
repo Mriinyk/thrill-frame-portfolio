@@ -10,6 +10,7 @@ from django.core.paginator import Paginator
 from django.db.models import F, Q
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views.decorators.http import require_POST
 from django.views.generic.edit import UpdateView, DeleteView
 from django.views.generic import ListView
 
@@ -343,6 +344,7 @@ def photo_delete(request, pk):
 
 
 @login_required
+@require_POST
 def photo_like(request, pk):
     photo = get_object_or_404(PhotoSession, pk=pk)
     if photo.likes.filter(id=request.user.id).exists():

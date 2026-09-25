@@ -54,6 +54,10 @@ class InteractionViewTests(TestCase):
             title="Demo video",
             video_url="https://www.youtube.com/watch?v=dQw4w9WgXcQ",
         )
+        cls.photo = PhotoSession.objects.create(
+            title="Demo photo session",
+            drive_folder_url="https://drive.google.com/drive/folders/demo",
+        )
 
     def test_authenticated_user_can_toggle_video_like(self):
         self.client.force_login(self.user)
@@ -69,6 +73,23 @@ class InteractionViewTests(TestCase):
         response = self.client.post(url)
         self.assertFalse(response.json()["liked"])
         self.assertEqual(self.video.likes.count(), 0)
+
+    def test_photo_like_only_accepts_post(self):
+        self.client.force_login(self.user)
+        url = reverse(
+            "thrill_frame_app:photo_like", kwargs={"pk": self.photo.id}
+        )
+
+        response = self.client.get(url)
+
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(self.photo.likes.count(), 0)
+
+        response = self.client.post(url)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(response.json()["liked"])
+        self.assertEqual(self.photo.likes.count(), 1)
 
     def test_authenticated_user_can_add_video_comment(self):
         self.client.force_login(self.user)
