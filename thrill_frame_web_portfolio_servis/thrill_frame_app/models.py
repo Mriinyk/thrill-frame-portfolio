@@ -53,11 +53,12 @@ class VideoSlide(models.Model):
             r"(?:v=|youtu\.be/|youtube\.com/(?:embed/|v/|shorts/|live/))"
             r"([a-zA-Z0-9_-]{11})(?:[?&#/]|$)"
         )
-        match = re.fullmatch(r"[a-zA-Z0-9_-]{11}", value) or re.search(
-            pattern, value
-        )
-        if match:
-            self.youtube_id = match.group(1)
+        if re.fullmatch(r"[a-zA-Z0-9_-]{11}", value):
+            self.youtube_id = value
+        else:
+            match = re.search(pattern, value)
+            if match:
+                self.youtube_id = match.group(1)
         super().save(*args, **kwargs)
 
 

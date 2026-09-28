@@ -6,12 +6,28 @@ from thrill_frame_app.models import (
     PhotoSession,
     User,
     VideoComment,
+    VideoSlide,
     VideoWork,
     validate_youtube_input,
 )
 
 
 class ModelBusinessLogicTests(TestCase):
+    def test_video_slide_saves_plain_id_and_url(self):
+        for index, value in enumerate(
+            (
+                "dQw4w9WgXcQ",
+                "https://youtu.be/dQw4w9WgXcQ",
+            )
+        ):
+            with self.subTest(value=value):
+                slide = VideoSlide.objects.create(
+                    title=f"Slide {index}",
+                    youtube_id=value,
+                    overlay_text="Featured video",
+                )
+                self.assertEqual(slide.youtube_id, "dQw4w9WgXcQ")
+
     def test_youtube_validator_accepts_id_and_rejects_invalid_value(self):
         validate_youtube_input("dQw4w9WgXcQ")
         validate_youtube_input("https://www.youtube.com/watch?v=dQw4w9WgXcQ")
