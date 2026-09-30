@@ -1,36 +1,117 @@
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-.env
-db.sqlite3
-staticfiles/
-
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-venv/
-ENV/
-env/
-.venv/
-
 # Django
 *.log
+*.pot
+*.pyc
+__pycache__/
 local_settings.py
+db.sqlite3
+db.sqlite3-journal
 media/
+staticfiles/
 
-# Draw.io diagrams
-thrill_frame_web_portfolio_servis/thrill_frame_app/database_schema.drawio
+# Python bytecode and extensions
+*.pyo
+*.pyd
+*$py.class
+*.so
+.Python
 
-# IDE and editors
-.vscode/
+# Packaging and build artifacts
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# PyInstaller
+*.manifest
+*.spec
+
+# Installer logs
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Tests and coverage
+htmlcov/
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache/
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+cover/
+
+# Compiled translations
+*.mo
+
+# Local application and framework state
+instance/
+.webassets-cache/
+.scrapy/
+docs/_build/
+.pybuilder/
+target/
+
+# Jupyter and IPython
+.ipynb_checkpoints/
+profile_default/
+ipython_config.py
+
+# Python environments
+.env
+.venv/
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Python tooling caches
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+.ruff_cache/
+__pypackages__/
+cython_debug/
+poetry.toml
+.pdm.toml
+
+# Editors and IDEs
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+!.vscode/*.code-snippets
+.history/
+.ionide/
 .pycharm/
 .idea/
 *.swp
 *.swo
+*.vsix
 
-# Операційна система
+# Operating system files
 .DS_Store
 Thumbs.db
+
+# Project-specific files
+thrill_frame_web_portfolio_servis/thrill_frame_app/database_schema.drawio
