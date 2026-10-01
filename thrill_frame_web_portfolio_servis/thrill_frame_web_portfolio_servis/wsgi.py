@@ -7,12 +7,12 @@ For more information on this file, see
 https://docs.djangoproject.com/en/6.1/howto/deployment/wsgi/
 """
 
-import os
-
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault(
-    "DJANGO_SETTINGS_MODULE", "thrill_frame_web_portfolio_servis.settings"
+from thrill_frame_web_portfolio_servis.settings_loader import (
+    configure_settings_module,
 )
+
+configure_settings_module()
 
 application = get_wsgi_application()

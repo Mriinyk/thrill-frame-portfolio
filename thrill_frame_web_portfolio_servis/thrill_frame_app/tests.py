@@ -1,8 +1,11 @@
+from unittest.mock import Mock, patch
+
 from django.core.exceptions import ValidationError
 from django.urls import reverse
-from django.test import TestCase
+from django.test import SimpleTestCase, TestCase, override_settings
 
 from thrill_frame_app.models import (
+    ContactRequest,
     PhotoSession,
     User,
     VideoComment,
@@ -10,6 +13,36 @@ from thrill_frame_app.models import (
     VideoWork,
     validate_youtube_input,
 )
+from thrill_frame_app.views import send_telegram_notification
+
+
+class TelegramNotificationTests(SimpleTestCase):
+    @override_settings(TELEGRAM_BOT_TOKEN="test-token", TELEGRAM_CHAT_ID="123")
+    @patch("thrill_frame_app.views.requests.post")
+    def test_rejected_html_is_escaped_and_logged(self, mock_post):
+        response = Mock()
+        response.status_code = 400
+        response.ok = False
+        response.json.return_value = {
+            "ok": False,
+            "description": "Bad Request: can't parse entities",
+        }
+        mock_post.return_value = response
+        contact_request = ContactRequest(
+            id=123,
+            contact_method="telegram",
+            social_username="@user",
+            message="Text with <tags> & symbols",
+        )
+
+        with self.assertLogs("thrill_frame_app.views", level="ERROR"):
+            sent = send_telegram_notification(contact_request)
+
+        self.assertFalse(sent)
+        self.assertIn(
+            "Text with &lt;tags&gt; &amp; symbols",
+            mock_post.call_args.kwargs["json"]["text"],
+        )
 
 
 class ModelBusinessLogicTests(TestCase):
@@ -74,6 +107,25 @@ class InteractionViewTests(TestCase):
             title="Demo photo session",
             drive_folder_url="https://drive.google.com/drive/folders/demo",
         )
+
+    @patch("thrill_frame_app.views.send_telegram_notification", return_value=False)
+    def test_contact_form_reports_telegram_delivery_failure(self, mock_notify):
+        response = self.client.post(
+            reverse("thrill_frame_app:contact"),
+            {
+                "contact_method": "telegram",
+                "social_username": "@viewer",
+                "message": "Please contact me",
+            },
+            follow=True,
+        )
+
+        self.assertEqual(ContactRequest.objects.count(), 1)
+        self.assertContains(
+            response,
+            "Повідомлення збережено, але сповіщення не вдалося надіслати.",
+        )
+        mock_notify.assert_called_once()
 
     def test_authenticated_user_can_toggle_video_like(self):
         self.client.force_login(self.user)

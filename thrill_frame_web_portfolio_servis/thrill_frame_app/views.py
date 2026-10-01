@@ -1,3 +1,6 @@
+import html
+import logging
+
 import requests
 from django.conf import settings
 from django.urls import reverse, reverse_lazy
@@ -29,6 +32,8 @@ from thrill_frame_app.models import (
     VideoSlide,
     VideoWork,
 )
+
+logger = logging.getLogger(__name__)
 
 
 def index(request):
@@ -127,6 +132,10 @@ def send_telegram_notification(contact_instance):
     bot_token = getattr(settings, "TELEGRAM_BOT_TOKEN", "")
     chat_id = getattr(settings, "TELEGRAM_CHAT_ID", "")
 
+    if not bot_token or not chat_id:
+        logger.error("Telegram notification is not configured.")
+        return False
+
     contact_method = contact_instance.contact_method
     social_username = contact_instance.social_username
     user_message = contact_instance.message
@@ -140,9 +149,10 @@ def send_telegram_notification(contact_instance):
     text = (
         f"🔥 <b>Нова заявка з сайту! (#ID: {contact_instance.id})</b>\n\n"
         f"<b>Зв'язок:</b> {contact_instance.get_contact_method_display()}\n"
-        f"<b>Нік:</b> {social_username}\n"
-        f"<b>Посилання:</b> <a href=\"{link}\">Перейти до профілю</a>\n\n"
-        f"<b>Повідомлення:</b>\n<i>{user_message}</i>"
+        f"<b>Нік:</b> {html.escape(social_username)}\n"
+        f"<b>Посилання:</b> <a href=\"{html.escape(link, quote=True)}\">"
+        f"Перейти до профілю</a>\n\n"
+        f"<b>Повідомлення:</b>\n<i>{html.escape(user_message)}</i>"
     )
 
     url = f"https://api.telegram.org/bot{bot_token}/sendMessage"
@@ -154,15 +164,24 @@ def send_telegram_notification(contact_instance):
 
     try:
         response = requests.post(url, json=payload, timeout=5)
-        if response.status_code == 200:
-            data = response.json()
-            message_id = data.get("result", {}).get("message_id")
-            if message_id:
-                contact_instance.telegram_message_id = message_id
-                contact_instance.save(update_fields=["telegram_message_id"])
-            return True
+        data = response.json()
+        if not response.ok or not data.get("ok"):
+            logger.error(
+                "Telegram rejected the notification (HTTP %s): %s",
+                response.status_code,
+                data.get("description", "No error description"),
+            )
+            return False
+
+        message_id = data.get("result", {}).get("message_id")
+        if message_id:
+            contact_instance.telegram_message_id = message_id
+            contact_instance.save(update_fields=["telegram_message_id"])
+        return True
     except requests.RequestException as error:
-        print(f"Помилка відправки Telegram сповіщення: {error}")
+        logger.error("Telegram notification request failed: %s", error)
+    except ValueError:
+        logger.error("Telegram returned an invalid response for the notification.")
 
     return False
 
@@ -173,9 +192,13 @@ def contact_view(request):
         if form.is_valid():
             contact_request = form.save()
 
-            send_telegram_notification(contact_request)
-
-            messages.success(request, "Ваше повідомлення успішно надіслано!")
+            if send_telegram_notification(contact_request):
+                messages.success(request, "Ваше повідомлення успішно надіслано!")
+            else:
+                messages.error(
+                    request,
+                    "Повідомлення збережено, але сповіщення не вдалося надіслати.",
+                )
             return redirect("thrill_frame_app:contact")
     else:
         form = ContactForm()
