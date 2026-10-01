@@ -20,6 +20,10 @@ STORAGES = {
 DEBUG = False
 
 ALLOWED_HOSTS = config("ALLOWED_HOSTS", default="", cast=Csv())
+RENDER_EXTERNAL_HOSTNAME = config("RENDER_EXTERNAL_HOSTNAME", default="")
+if RENDER_EXTERNAL_HOSTNAME and RENDER_EXTERNAL_HOSTNAME not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 CSRF_TRUSTED_ORIGINS = config(
     "CSRF_TRUSTED_ORIGINS",
     default="",
@@ -36,11 +40,11 @@ DATABASES = {
         "USER": postgres_config("POSTGRES_USER"),
         "PASSWORD": postgres_config("POSTGRES_PASSWORD"),
         "HOST": postgres_config("POSTGRES_HOST"),
-        "PORT": postgres_config("POSTGRES_PORT", default="5432"),
+        "PORT": postgres_config("POSTGRES_PORT"),
         "OPTIONS": {
-            "sslmode": postgres_config("POSTGRES_SSLMODE", default="require"),
+            "sslmode": postgres_config("POSTGRES_SSLMODE"),
             "channel_binding": postgres_config(
-                "POSTGRES_CHANNEL_BINDING", default="require"
+                "POSTGRES_CHANNEL_BINDING"
             ),
         },
     }

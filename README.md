@@ -93,7 +93,7 @@ Use these commands:
 Build command:
 
 ```text
-python -m pip install -r requirements.txt && cd thrill_frame_web_portfolio_servis && python manage.py collectstatic --noinput && python manage.py migrate
+bash ./thrill_frame_web_portfolio_servis/build.sh
 ```
 
 Start command:
@@ -123,6 +123,10 @@ TELEGRAM_CHAT_ID=<chat id>
 
 Do not include URL schemes in `ALLOWED_HOSTS`; `CSRF_TRUSTED_ORIGINS` requires
 the `https://` scheme. Keep `.env` files out of the repository.
+
+Use the committed `.env.sample` as a checklist for Render's environment
+variables; replace every placeholder with a service-specific value before
+deploying.
 
 ## Tests
 
